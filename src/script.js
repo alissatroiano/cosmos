@@ -138,6 +138,29 @@ function moveOtherPlanets(timeDelta) {
     });
 }
 
+function addOtherPlanet() {
+    const radius = 15 + Math.random();
+    const color = Math.random() * 0xffffff;
+    const speed = 0.001 + Math.random() * 0.001;
+    const clockwise = Math.random() >= 0.5;
+    const angle = Math.random() * Math.PI * 2;
+
+    const planet = Planet(color, radius);
+    scene.add(planet);
+
+    otherPlanets.push({ 
+        mesh: planet, 
+        speed, 
+        clockwise, 
+        angle 
+    });
+}
+
+// Add some initial planets
+for (let i = 0; i < 1; i++) {
+    addOtherPlanet();
+}
+
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
@@ -146,6 +169,37 @@ controls.minDistance = 100;
 controls.maxDistance = 500;
 controls.maxPolarAngle = Math.PI / 2;
 
+// Create player hit zones (spheres)
+const playerHitZones = [
+    new THREE.Mesh(
+        new THREE.SphereGeometry(20, 32, 32),
+        new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true })
+    ),
+    new THREE.Mesh(
+        new THREE.SphereGeometry(30, 32, 32),
+        new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true })
+    ),
+    new THREE.Mesh(
+        new THREE.SphereGeometry(40, 32, 32),
+        new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true })
+    )
+];
+
+// Add functionality so game is over if player planet collides with other planet
+function checkCollision() {
+    const playerPosition = playerPlanet.position.clone();
+
+    otherPlanets.forEach((planetInfo) => {
+        const planetPosition = planetInfo.mesh.position.clone();
+        const distance = playerPosition.distanceTo(planetPosition);
+
+        // Check for collision
+        if (distance < 25 + planetInfo.mesh.geometry.parameters.radius) {
+            console.log('Collision detected!');
+            // Handle collision logic here
+        }
+    });
+}
 
 // Animation loop
 function animate(timestamp) {
