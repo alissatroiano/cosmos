@@ -83,13 +83,36 @@ let gameStarted = false;
 let lastTimestamp;
 let playerAngleMoved = 0;
 let playerAngleInitial = 0;
-let score = 0;
+let score;
+let lapsCompleted = 0;
 const speed = 0.0017;
+  
 let otherPlanets = [];
 
 // Movement controls
 let accelerate = false;
 let decelerate = false;
+
+function hitDetection() {
+    const playerPosition = new THREE.Vector3();
+    playerPlanet.getWorldPosition(playerPosition);
+
+    for (const planet of otherPlanets) {
+        const planetPosition = new THREE.Vector3();
+        planet.mesh.getWorldPosition(planetPosition);
+
+        const distance = playerPosition.distanceTo(planetPosition);
+        const minDistance = 4; // Adjust this value based on planet sizes
+
+        if (distance < minDistance) {
+            console.log('Game Over! Planet collision!');
+            gameStarted = false;
+            // You might want to add game reset logic here
+            return true;
+        }
+    }
+    return false;
+}
 
 // Add keyboard controls
 document.addEventListener('keydown', (event) => {
@@ -112,6 +135,21 @@ function movePlayerPlanet(timeDelta) {
     const playerSpeed = getPlayerSpeed();
     playerAngleMoved -= playerSpeed * timeDelta;
 
+    // Track laps - one lap is 2π radians
+    const previousLaps = Math.floor(Math.abs(playerAngleMoved) / (Math.PI * 2));
+    const currentLaps = Math.floor(Math.abs(playerAngleMoved + (playerSpeed * timeDelta)) / (Math.PI * 2));
+    
+    if (currentLaps > previousLaps) {
+        lapsCompleted = currentLaps;
+        console.log(`Completed lap ${lapsCompleted}`);
+        
+        // Add new planets every 2 laps
+        if (lapsCompleted % 2 === 0) {
+            console.log('Adding new planets!');
+            addOtherPlanet();
+            addOtherPlanet();
+        }
+    }
     const totalPlayerAngle = playerAngleInitial + playerAngleMoved;
 
     const playerX = Math.cos(totalPlayerAngle) * trackRadius;
@@ -120,7 +158,6 @@ function movePlayerPlanet(timeDelta) {
     playerPlanet.position.x = playerX;
     playerPlanet.position.y = playerY;
 
-    // Add rotation to make it spin as it moves
     playerPlanet.rotation.z = totalPlayerAngle - Math.PI / 2;
     playerPlanet.rotation.y += 0.01;
 }
@@ -169,37 +206,6 @@ controls.minDistance = 100;
 controls.maxDistance = 500;
 controls.maxPolarAngle = Math.PI / 2;
 
-// Create player hit zones (spheres)
-const playerHitZones = [
-    new THREE.Mesh(
-        new THREE.SphereGeometry(20, 32, 32),
-        new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true })
-    ),
-    new THREE.Mesh(
-        new THREE.SphereGeometry(30, 32, 32),
-        new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true })
-    ),
-    new THREE.Mesh(
-        new THREE.SphereGeometry(40, 32, 32),
-        new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true })
-    )
-];
-
-// Add functionality so game is over if player planet collides with other planet
-function checkCollision() {
-    const playerPosition = playerPlanet.position.clone();
-
-    otherPlanets.forEach((planetInfo) => {
-        const planetPosition = planetInfo.mesh.position.clone();
-        const distance = playerPosition.distanceTo(planetPosition);
-
-        // Check for collision
-        if (distance < 25 + planetInfo.mesh.geometry.parameters.radius) {
-            console.log('Collision detected!');
-            // Handle collision logic here
-        }
-    });
-}
 
 // Animation loop
 function animate(timestamp) {
@@ -209,20 +215,49 @@ function animate(timestamp) {
         return;
     }
 
+    if (!gameStarted) {
+        gameStarted = true;
+        lastTimestamp = timestamp;
+        playerAngleMoved = 0;
+        lapsCompleted = 0;
+        score = 0;
+    }
+
     const timeDelta = timestamp - lastTimestamp;
 
     movePlayerPlanet(timeDelta);
     moveOtherPlanets(timeDelta);
 
-    controls.update(); // Add this line to update controls
+    // Check for collisions
+    if (hitDetection()) {
+        // Game over logic
+        console.log(`Game Over! Final Score: ${score}`);
+        console.log(`Completed Laps: ${lapsCompleted}`);
+        resetGame();
+    }
+
+    controls.update();
     renderer.render(scene, camera);
     lastTimestamp = timestamp;
     requestAnimationFrame(animate);
 }
 
-
-// Start the game
-requestAnimationFrame(animate);
+function resetGame() {
+    // Reset game state
+    gameStarted = false;
+    playerAngleMoved = 0;
+    lapsCompleted = 0;
+    score = 0;
+    playerAngleInitial = 0;
+    playerPlanet.position.set(0, 0, 0); // Reset player position
+    otherPlanets.forEach((planetInfo) => {
+        scene.remove(planetInfo.mesh);
+    });
+    otherPlanets = [];
+    for (let i = 0; i < 1; i++) {
+        addOtherPlanet();
+    }
+}
 
 // Handle window resize
 window.addEventListener('resize', () => {
@@ -235,3 +270,7 @@ window.addEventListener('resize', () => {
     
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// Start the game
+resetGame();
+requestAnimationFrame(animate);
