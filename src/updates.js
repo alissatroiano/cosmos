@@ -15,12 +15,12 @@ const cameraWidth = 960;
 const cameraHeight = cameraWidth / aspectRatio;
 
 const camera = new THREE.OrthographicCamera(
-    cameraWidth / -2, // left
-    cameraWidth / 2, // right
-    cameraHeight / 2, // top
-    cameraHeight / -2, // bottom
-    50, // near plane
-    700 // far plane
+  cameraWidth / -2, // left
+  cameraWidth / 2, // right
+  cameraHeight / 2, // top
+  cameraHeight / -2, // bottom
+  50, // near plane
+  700 // far plane
 );
 
 camera.position.set(0, -210, 300);
@@ -60,56 +60,78 @@ scene.add(playerPlanet);
 
 playerPlanet.position.set(0, 0, 0); // Set initial position
 
-// Setup track parameters to look like an infinity symbol, so the user's challenge is to not collide with the other planets (using up/down keyboard acceleration controls)
-const arcCenterX = 250; // Distance between the centers of the circles
-const trackRadius = 225;
+// Track setup
+const innerTrackRadius = 175; // For other planets
+const outerTrackRadius = 225; // For player
 const trackWidth = 45;
-const innerTrackRadius = trackRadius - trackWidth;
-const outerTrackRadius = trackRadius + trackWidth;
 
-// Create infinity-shaped track
-function createInfinityTrack() {
-    const trackShape = new THREE.Shape();
-    
-    // Create outer path (right circle)
-    trackShape.absarc(arcCenterX, 0, outerTrackRadius, 0, Math.PI * 2, false);
-    // Create outer path (left circle)
-    trackShape.absarc(-arcCenterX, 0, outerTrackRadius, 0, Math.PI * 2, false);
-    
-    // Create hole (right circle)
-    const holeRight = new THREE.Path();
-    holeRight.absarc(arcCenterX, 0, innerTrackRadius, 0, Math.PI * 2, true);
-    
-    // Create hole (left circle)
-    const holeLeft = new THREE.Path();
-    holeLeft.absarc(-arcCenterX, 0, innerTrackRadius, 0, Math.PI * 2, true);
-    
-    trackShape.holes.push(holeRight);
-    trackShape.holes.push(holeLeft);
-    
-    const geometry = new THREE.ShapeGeometry(trackShape);
+// Create two tracks
+function createTrack(radius, width) {
+    const innerRadius = radius - width/2;
+    const outerRadius = radius + width/2;
+    const geometry = new THREE.RingGeometry(innerRadius, outerRadius, 60);
     const material = new THREE.MeshLambertMaterial({
         color: 0x111111,
         side: THREE.DoubleSide
     });
-    
-    const track = new THREE.Mesh(geometry, material);
+    const track = new THREE.Mesh(geometry, trackMaterial);
     track.rotation.x = Math.PI / 2;
     track.receiveShadow = true;
     return track;
 }
 
-// Create and add track
-const track = createInfinityTrack();
-scene.add(track);
-
-
 // Create and add both tracks
-// const innerTrack = createTrack(innerTrackRadius, trackWidth);
-// const outerTrack = createTrack(outerTrackRadius, trackWidth);
-// scene.add(innerTrack);
-// scene.add(outerTrack);
+const innerTrack = createTrack(innerTrackRadius, trackWidth);
+const outerTrack = createTrack(outerTrackRadius, trackWidth);
+scene.add(innerTrack);
+scene.add(outerTrack);
 
+// Modify movePlayerPlanet to use outer track
+function movePlayerPlanet(timeDelta) {
+    const playerSpeed = getPlayerSpeed();
+    playerAngleMoved -= playerSpeed * timeDelta;
+
+    // Track laps - one lap is 2π radians
+    const previousLaps = Math.floor(Math.abs(playerAngleMoved) / (Math.PI * 2));
+    const currentLaps = Math.floor(Math.abs(playerAngleMoved + (playerSpeed * timeDelta)) / (Math.PI * 2));
+    
+    if (currentLaps > previousLaps) {
+        lapsCompleted = currentLaps;
+        console.log(`Completed lap ${lapsCompleted}`);
+        
+        // Add new planets every 2 laps
+        if (lapsCompleted % 2 === 0) {
+            console.log('Adding new planets!');
+            addOtherPlanet();
+            addOtherPlanet();
+        }
+    }
+
+    const totalPlayerAngle = playerAngleInitial + playerAngleMoved;
+
+    // Use outerTrackRadius for player
+    const playerX = Math.cos(totalPlayerAngle) * outerTrackRadius;
+    const playerY = Math.sin(totalPlayerAngle) * outerTrackRadius;
+
+    playerPlanet.position.x = playerX;
+    playerPlanet.position.y = playerY;
+
+    playerPlanet.rotation.z = totalPlayerAngle - Math.PI / 2;
+    playerPlanet.rotation.y += 0.01;
+}
+
+
+
+// Create track
+const trackGeometry = new THREE.RingGeometry(innerTrackRadius, outerTrackRadius, 60);
+const trackMaterial = new THREE.MeshLambertMaterial({
+    color: 0x111111, // Dark color for space feel
+    side: THREE.DoubleSide
+});
+const track = new THREE.Mesh(trackGeometry, trackMaterial);
+track.rotation.x = Math.PI / 2;
+track.receiveShadow = true;
+scene.add(track);
 
 // Game state
 let gameStarted = false;
@@ -119,7 +141,7 @@ let playerAngleInitial = 0;
 let score;
 let lapsCompleted = 0;
 const speed = 0.0017;
-
+  
 let otherPlanets = [];
 
 // Movement controls
@@ -167,35 +189,29 @@ function movePlayerPlanet(timeDelta) {
     const playerSpeed = getPlayerSpeed();
     playerAngleMoved -= playerSpeed * timeDelta;
 
-    // Track laps
-    const previousLaps = Math.floor(Math.abs(playerAngleMoved) / (Math.PI * 4)); // Now needs 4π for full lap
-    const currentLaps = Math.floor(Math.abs(playerAngleMoved + (playerSpeed * timeDelta)) / (Math.PI * 4));
+    // Track laps - one lap is 2π radians
+    const previousLaps = Math.floor(Math.abs(playerAngleMoved) / (Math.PI * 2));
+    const currentLaps = Math.floor(Math.abs(playerAngleMoved + (playerSpeed * timeDelta)) / (Math.PI * 2));
     
     if (currentLaps > previousLaps) {
         lapsCompleted = currentLaps;
         console.log(`Completed lap ${lapsCompleted}`);
+        
+        // Add new planets every 2 laps
         if (lapsCompleted % 2 === 0) {
+            console.log('Adding new planets!');
             addOtherPlanet();
             addOtherPlanet();
         }
     }
-
     const totalPlayerAngle = playerAngleInitial + playerAngleMoved;
-    
-    // Calculate position on infinity track
-    let playerX, playerY;
-    if (totalPlayerAngle % (Math.PI * 2) < Math.PI) {
-        // Right circle
-        playerX = Math.cos(totalPlayerAngle) * outerTrackRadius + arcCenterX;
-        playerY = Math.sin(totalPlayerAngle) * outerTrackRadius;
-    } else {
-        // Left circle
-        playerX = Math.cos(totalPlayerAngle) * outerTrackRadius - arcCenterX;
-        playerY = Math.sin(totalPlayerAngle) * outerTrackRadius;
-    }
+
+    const playerX = Math.cos(totalPlayerAngle) * trackRadius;
+    const playerY = Math.sin(totalPlayerAngle) * trackRadius;
 
     playerPlanet.position.x = playerX;
     playerPlanet.position.y = playerY;
+
     playerPlanet.rotation.z = totalPlayerAngle - Math.PI / 2;
     playerPlanet.rotation.y += 0.01;
 }
@@ -204,17 +220,9 @@ function moveOtherPlanets(timeDelta) {
     otherPlanets.forEach((planetInfo) => {
         planetInfo.angle += planetInfo.speed * timeDelta * (planetInfo.clockwise ? 1 : -1);
         
-        // Calculate position on infinity track (inner track)
-        let x, y;
-        if (planetInfo.angle % (Math.PI * 2) < Math.PI) {
-            // Right circle
-            x = Math.cos(planetInfo.angle) * innerTrackRadius + arcCenterX;
-            y = Math.sin(planetInfo.angle) * innerTrackRadius;
-        } else {
-            // Left circle
-            x = Math.cos(planetInfo.angle) * innerTrackRadius - arcCenterX;
-            y = Math.sin(planetInfo.angle) * innerTrackRadius;
-        }
+        // Use innerTrackRadius for other planets
+        const x = Math.cos(planetInfo.angle) * innerTrackRadius;
+        const y = Math.sin(planetInfo.angle) * innerTrackRadius;
         
         planetInfo.mesh.position.x = x;
         planetInfo.mesh.position.y = y;
@@ -227,29 +235,24 @@ function addOtherPlanet() {
     const color = Math.random() * 0xffffff;
     const speed = 0.001 + Math.random() * 0.001;
     const clockwise = Math.random() >= 0.5;
-    const angle = Math.random() * Math.PI * 4;
+    const angle = Math.random() * Math.PI * 2;
 
     const planet = Planet(color, radius);
     scene.add(planet);
 
-    // Initial position on infinity track
-    let x, y;
-    if (angle % (Math.PI * 2) < Math.PI) {
-        x = Math.cos(angle) * innerTrackRadius + arcCenterX;
-        y = Math.sin(angle) * innerTrackRadius;
-    } else {
-        x = Math.cos(angle) * innerTrackRadius - arcCenterX;
-        y = Math.sin(angle) * innerTrackRadius;
-    }
+    // Position on inner track initially
+    const x = Math.cos(angle) * innerTrackRadius;
+    const y = Math.sin(angle) * innerTrackRadius;
     planet.position.set(x, y, 0);
 
-    otherPlanets.push({
-        mesh: planet,
-        speed,
-        clockwise,
-        angle
+    otherPlanets.push({ 
+        mesh: planet, 
+        speed, 
+        clockwise, 
+        angle 
     });
 }
+
 
 // Add some initial planets
 for (let i = 0; i < 1; i++) {
@@ -321,11 +324,11 @@ function resetGame() {
 window.addEventListener('resize', () => {
     const newAspectRatio = window.innerWidth / window.innerHeight;
     const newCameraHeight = cameraWidth / newAspectRatio;
-
+    
     camera.top = newCameraHeight / 2;
     camera.bottom = -newCameraHeight / 2;
     camera.updateProjectionMatrix();
-
+    
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
