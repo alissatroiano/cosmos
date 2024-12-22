@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
@@ -16,12 +15,12 @@ const cameraWidth = 960;
 const cameraHeight = cameraWidth / aspectRatio;
 
 const camera = new THREE.OrthographicCamera(
-  cameraWidth / -2, // left
-  cameraWidth / 2, // right
-  cameraHeight / 2, // top
-  cameraHeight / -2, // bottom
-  50, // near plane
-  700 // far plane
+    cameraWidth / -2, // left
+    cameraWidth / 2, // right
+    cameraHeight / 2, // top
+    cameraHeight / -2, // bottom
+    50, // near plane
+    700 // far plane
 );
 
 camera.position.set(0, -210, 300);
@@ -67,16 +66,27 @@ const trackWidth = 45;
 const innerTrackRadius = trackRadius - trackWidth;
 const outerTrackRadius = trackRadius + trackWidth;
 
-// Create track
-const trackGeometry = new THREE.RingGeometry(innerTrackRadius, outerTrackRadius, 60);
-const trackMaterial = new THREE.MeshLambertMaterial({
-    color: 0x111111, // Dark color for space feel
-    side: THREE.DoubleSide
-});
-const track = new THREE.Mesh(trackGeometry, trackMaterial);
-track.rotation.x = Math.PI / 2;
-track.receiveShadow = true;
-scene.add(track);
+
+function createTrack(radius, width) {
+    const innerRadius = radius - width / 2;
+    const outerRadius = radius + width / 2;
+    const geometry = new THREE.RingGeometry(innerRadius, outerRadius, 60);
+    const trackMaterial = new THREE.MeshLambertMaterial({
+        color: 0x666666,
+        side: THREE.DoubleSide
+    });
+    const track = new THREE.Mesh(geometry, trackMaterial);
+    track.rotation.x = Math.PI / 2;
+    track.receiveShadow = true;
+    return track;
+}
+
+// Create and add both tracks
+const innerTrack = createTrack(innerTrackRadius, trackWidth);
+const outerTrack = createTrack(outerTrackRadius, trackWidth);
+scene.add(innerTrack);
+scene.add(outerTrack);
+
 
 // Game state
 let gameStarted = false;
@@ -86,7 +96,7 @@ let playerAngleInitial = 0;
 let score;
 let lapsCompleted = 0;
 const speed = 0.0017;
-  
+
 let otherPlanets = [];
 
 // Movement controls
@@ -102,12 +112,11 @@ function hitDetection() {
         planet.mesh.getWorldPosition(planetPosition);
 
         const distance = playerPosition.distanceTo(planetPosition);
-        const minDistance = 4; // Adjust this value based on planet sizes
+        const minDistance = 40; // Adjust this value based on where tracks overlap
 
         if (distance < minDistance) {
             console.log('Game Over! Planet collision!');
             gameStarted = false;
-            // You might want to add game reset logic here
             return true;
         }
     }
@@ -138,11 +147,11 @@ function movePlayerPlanet(timeDelta) {
     // Track laps - one lap is 2π radians
     const previousLaps = Math.floor(Math.abs(playerAngleMoved) / (Math.PI * 2));
     const currentLaps = Math.floor(Math.abs(playerAngleMoved + (playerSpeed * timeDelta)) / (Math.PI * 2));
-    
+
     if (currentLaps > previousLaps) {
         lapsCompleted = currentLaps;
         console.log(`Completed lap ${lapsCompleted}`);
-        
+
         // Add new planets every 2 laps
         if (lapsCompleted % 2 === 0) {
             console.log('Adding new planets!');
@@ -152,8 +161,9 @@ function movePlayerPlanet(timeDelta) {
     }
     const totalPlayerAngle = playerAngleInitial + playerAngleMoved;
 
-    const playerX = Math.cos(totalPlayerAngle) * trackRadius;
-    const playerY = Math.sin(totalPlayerAngle) * trackRadius;
+    // Use outerTrackRadius for player
+    const playerX = Math.cos(totalPlayerAngle) * outerTrackRadius;
+    const playerY = Math.sin(totalPlayerAngle) * outerTrackRadius;
 
     playerPlanet.position.x = playerX;
     playerPlanet.position.y = playerY;
@@ -162,21 +172,25 @@ function movePlayerPlanet(timeDelta) {
     playerPlanet.rotation.y += 0.01;
 }
 
+
+
 function moveOtherPlanets(timeDelta) {
     otherPlanets.forEach((planetInfo) => {
         planetInfo.angle += planetInfo.speed * timeDelta * (planetInfo.clockwise ? 1 : -1);
-        
-        const x = Math.cos(planetInfo.angle) * trackRadius;
-        const y = Math.sin(planetInfo.angle) * trackRadius;
-        
+
+        // Use innerTrackRadius for other planets
+        const x = Math.cos(planetInfo.angle) * innerTrackRadius;
+        const y = Math.sin(planetInfo.angle) * innerTrackRadius;
+
         planetInfo.mesh.position.x = x;
         planetInfo.mesh.position.y = y;
         planetInfo.mesh.rotation.y += 0.01;
     });
 }
 
+
 function addOtherPlanet() {
-    const radius = 15 + Math.random();
+    const radius = 15 + Math.random(); // Adjust size as needed
     const color = Math.random() * 0xffffff;
     const speed = 0.001 + Math.random() * 0.001;
     const clockwise = Math.random() >= 0.5;
@@ -185,13 +199,19 @@ function addOtherPlanet() {
     const planet = Planet(color, radius);
     scene.add(planet);
 
-    otherPlanets.push({ 
-        mesh: planet, 
-        speed, 
-        clockwise, 
-        angle 
+    // Position on inner track initially
+    const x = Math.cos(angle) * innerTrackRadius;
+    const y = Math.sin(angle) * innerTrackRadius;
+    planet.position.set(x, y, 0);
+
+    otherPlanets.push({
+        mesh: planet,
+        speed,
+        clockwise,
+        angle
     });
 }
+
 
 // Add some initial planets
 for (let i = 0; i < 1; i++) {
@@ -263,11 +283,11 @@ function resetGame() {
 window.addEventListener('resize', () => {
     const newAspectRatio = window.innerWidth / window.innerHeight;
     const newCameraHeight = cameraWidth / newAspectRatio;
-    
+
     camera.top = newCameraHeight / 2;
     camera.bottom = -newCameraHeight / 2;
     camera.updateProjectionMatrix();
-    
+
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
