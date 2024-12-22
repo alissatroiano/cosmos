@@ -1,6 +1,31 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+// Constants
+const GAME_CONSTANTS = {
+    CAMERA_WIDTH: 960,
+    ARC_CENTER_X: 250,
+    TRACK_RADIUS: 225,
+    TRACK_WIDTH: 45,
+    PLAYER_SPEED: 0.0017,
+    MIN_COLLISION_DISTANCE: 40
+};
+
+const gameState = {
+    started: false,
+    lastTimestamp: null,
+    playerAngleMoved: 0,
+    playerAngleInitial: 0,
+    score: 0,
+    lapsCompleted: 0,
+    otherPlanets: [],
+    controls: {
+        accelerate: false,
+        decelerate: false
+    }
+};
+
+
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
@@ -146,6 +171,7 @@ function hitDetection() {
     return false;
 }
 
+
 // Add keyboard controls
 document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowUp' || event.key === 'w') accelerate = true;
@@ -158,10 +184,11 @@ document.addEventListener('keyup', (event) => {
 });
 
 function getPlayerSpeed() {
-    if (accelerate) return speed * 2;
-    if (decelerate) return speed * 0.5;
-    return speed;
+    if (accelerate) return speed * 2;     // Double speed when accelerating
+    if (decelerate) return speed * 0.5;   // Half speed when decelerating
+    return speed;                         // Normal speed otherwise
 }
+
 
 function movePlayerPlanet(timeDelta) {
     const playerSpeed = getPlayerSpeed();
@@ -222,8 +249,9 @@ function moveOtherPlanets(timeDelta) {
     });
 }
 
+// Add initial planets
 function addOtherPlanet() {
-    const radius = 15 + Math.random(); // Adjust size as needed
+    const radius = 32 + Math.random();
     const color = Math.random() * 0xffffff;
     const speed = 0.001 + Math.random() * 0.001;
     const clockwise = Math.random() >= 0.5;
@@ -232,7 +260,7 @@ function addOtherPlanet() {
     const planet = Planet(color, radius);
     scene.add(planet);
 
-    // Initial position on infinity track
+    // Initial position on inner track
     let x, y;
     if (angle % (Math.PI * 2) < Math.PI) {
         x = Math.cos(angle) * innerTrackRadius + arcCenterX;
@@ -250,6 +278,8 @@ function addOtherPlanet() {
         angle
     });
 }
+
+
 
 // Add some initial planets
 for (let i = 0; i < 1; i++) {
