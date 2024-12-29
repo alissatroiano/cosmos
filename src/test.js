@@ -53,22 +53,55 @@ const playerPlanet = createPlanet(0x44aa88);
 scene.add(playerPlanet);
 
 // Create orbit track
-function createOrbitTrack() {
-    const trackRadius = 225;
+// Modify the createOrbitTrack function to accept a radius parameter
+// Create a function for a custom orbit track shape
+function createOrbitTrack(trackRadius = 225, color = 0x3333ff, offsetX = 0, offsetZ = 0) {
     const geometry = new THREE.RingGeometry(trackRadius - 20, trackRadius + 20, 64);
     const material = new THREE.MeshBasicMaterial({
-        color: 0x3333ff,
+        color: color,
         side: THREE.DoubleSide,
         opacity: 0.3,
         transparent: true
     });
     const track = new THREE.Mesh(geometry, material);
     track.rotation.x = Math.PI / 2; // Rotate to horizontal plane
+    
+    // Apply position offset
+    track.position.x = offsetX;
+    track.position.z = offsetZ;
+    
     return track;
 }
 
-const track = createOrbitTrack();
-scene.add(track);
+// Calculate offset for second track
+var angle = 360 * (Math.PI / 180); // Convert 30 degrees to radians
+const offsetDistance = 225; // Distance to offset the second track
+const offsetX = Math.cos(angle) * offsetDistance;
+const offsetZ = Math.sin(angle) * offsetDistance;
+
+// Create two tracks
+const track1 = createOrbitTrack(225, 0x3333ff, 0, 0); // First track at origin
+const track2 = createOrbitTrack(225, 0x33ff33, offsetX, offsetZ); // Second track offset
+
+// Add both tracks to the scene
+scene.add(track1);
+scene.add(track2);
+
+// Update animation to move along first track (you can modify this as needed)
+var angle = 0;
+function animate() {
+    requestAnimationFrame(animate);
+    
+    // Move planet in circular orbit on first track
+    angle += 0.01;
+    playerPlanet.position.x = Math.cos(angle) * 225;
+    playerPlanet.position.z = Math.sin(angle) * 225;
+    
+    renderer.render(scene, camera);
+}
+
+
+
 
 // Add some stars
 function addStars() {
@@ -96,18 +129,6 @@ function addStars() {
 
 addStars();
 
-// Animation
-let angle = 0;
-function animate() {
-    requestAnimationFrame(animate);
-    
-    // Move planet in circular orbit
-    angle += 0.01;
-    playerPlanet.position.x = Math.cos(angle) * 225;
-    playerPlanet.position.z = Math.sin(angle) * 225;
-    
-    renderer.render(scene, camera);
-}
 
 // Handle window resize
 window.addEventListener('resize', () => {
