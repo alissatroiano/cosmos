@@ -79,26 +79,28 @@ const offsetDistance = 225; // Distance to offset the second track
 const offsetX = Math.cos(angle) * offsetDistance;
 const offsetZ = Math.sin(angle) * offsetDistance;
 
+const centerAdjustX = -offsetX / 2;
+const centerAdjustZ = -offsetZ / 2;
 // Create two tracks
-const track1 = createOrbitTrack(225, 0x3333ff, 0, 0); // First track at origin
-const track2 = createOrbitTrack(225, 0x33ff33, offsetX, offsetZ); // Second track offset
+const track1 = createOrbitTrack(225, 0x3333ff, centerAdjustX, centerAdjustZ); // First track
+const track2 = createOrbitTrack(225, 0x33ff33, offsetX + centerAdjustX, offsetZ + centerAdjustZ); // Second track
 
 // Add both tracks to the scene
 scene.add(track1);
 scene.add(track2);
 
 // Update animation to move along first track (you can modify this as needed)
-var angle = 0;
 function animate() {
     requestAnimationFrame(animate);
     
-    // Move planet in circular orbit on first track
     angle += 0.01;
-    playerPlanet.position.x = Math.cos(angle) * 225;
-    playerPlanet.position.z = Math.sin(angle) * 225;
+    playerPlanet.position.x = Math.cos(angle) * 225 + centerAdjustX;
+    playerPlanet.position.z = Math.sin(angle) * 225 + centerAdjustZ;
     
     renderer.render(scene, camera);
 }
+
+
 
 
 
