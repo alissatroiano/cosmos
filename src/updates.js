@@ -48,6 +48,8 @@ class GameScene {
 
     setupScene() {
         this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color('none'); // Black
+
     }
 
     setupCamera() {

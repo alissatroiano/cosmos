@@ -1,15 +1,29 @@
-body {
-  background-image: url('https://images.pexels.com/photos/816608/pexels-photo-816608.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-}
 
-#score {
+body {
+    margin: 0;
+    /*   background: black; */
+    padding: 0;
+    color: white;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  button {
+    outline: none;
+    cursor: pointer;
+    border: none;
+    box-shadow: 3px 5px 0px 0px rgba(0, 0, 0, 0.75);
+  }
+  
+  a,
+  a:visited {
+    color: inherit;
+  }
+  
+  #score {
     position: absolute;
     font-family: "Press Start 2P", cursive;
     font-size: 0.9em;
-    color: pink;
+    color: white;
     transform: translate(-50%, -50%);
     opacity: 0.9;
     max-width: 100px;
@@ -33,7 +47,7 @@ body {
   #controls #instructions {
     margin-left: 20px;
     max-width: 300px;
-    color: pink;
+    background-color: rgba(0, 0, 0, 0.2);
     padding: 20px;
     opacity: 0;
     transition: opacity 2s;
