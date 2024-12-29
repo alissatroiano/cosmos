@@ -1,6 +1,5 @@
 window.focus(); // Capture keys right away (by default focus is on editor)
 
-
 // Define Game Constants
 const GAME_CONSTANTS = {
     CAMERA_WIDTH: 960,
@@ -196,7 +195,7 @@ document.addEventListener('keydown', (event) => {
     if (gameOver) return;
     
     if (event.key === 'ArrowUp' || event.key === 'w') {
-        playerAngle += 0.2; // Speed up
+        playerAngle += .12; // Speed up
     }
     if (event.key === 'ArrowDown' || event.key === 's') {
         playerAngle -= 0.1; // Slow down
