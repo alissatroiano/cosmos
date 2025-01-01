@@ -6,7 +6,7 @@ const GAME_CONSTANTS = {
     ARC_CENTER_X: 250,
     TRACK_RADIUS: 225,
     TRACK_WIDTH: 45,
-    PLAYER_SPEED: 2,
+    PLAYER_SPEED: .0017,
     MIN_COLLISION_DISTANCE: 40
 };
 
@@ -138,12 +138,11 @@ function animate() {
     
     // Move player planet
     playerAngle += 0.035;
-    playerAngle += 0.01;
     playerPlanet.position.x = Math.cos(playerAngle) * 225 + centerAdjustX;
     playerPlanet.position.z = Math.sin(playerAngle) * 225 + centerAdjustZ;
     
     // Move enemy planet on track 2
-    enemyAngle += 0.035; // Different speed for enemy
+    enemyAngle += 0.035; // Speed for enemy
     enemyPlanet.position.x = Math.cos(enemyAngle) * 225 + (offsetX + centerAdjustX);
     enemyPlanet.position.z = Math.sin(enemyAngle) * 225 + (offsetZ + centerAdjustZ);
 
@@ -151,7 +150,7 @@ function animate() {
     if (playerAngle >= Math.PI * 6) {
         let newEnemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
         scene.add(newEnemyPlanet);
-        gameState.otherPlanets.push({ mesh: newEnemyPlanet, angle: enemyAngle, speed: 0.5, clockwise: true });
+        gameState.otherPlanets.push({ mesh: newEnemyPlanet, angle: enemyAngle, speed: 0.05, clockwise: true });
         playerAngle = 0; // Reset player angle
     }
 
