@@ -123,6 +123,7 @@ const gameState = {
 let gameOver = false;
 let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
+let newEnemyAngle = Math.PI;
 
 // Collision detection function
 function checkCollision(planet1, planet2) {
@@ -149,12 +150,18 @@ function animate() {
     // Whenever the player planet goes around the track without colliding with the enemy planet three times, addd another moving enemy planet on enemy track
     if (playerAngle >= Math.PI * 6) {
         let newEnemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
-        newEnemyPlanet.position.x = Math.cos(enemyAngle) * 225 + (offsetX + centerAdjustX);
-        newEnemyPlanet.position.z = Math.sin(enemyAngle) * 225 + (offsetZ + centerAdjustZ);
         scene.add(newEnemyPlanet);
         gameState.otherPlanets.push({ mesh: newEnemyPlanet, angle: enemyAngle, speed: 0.5, clockwise: true });
         playerAngle = 0; // Reset player angle
     }
+
+    // Move new enemy planets on track 2
+    gameState.otherPlanets.forEach((planetInfo) => {
+        planetInfo.angle += planetInfo.speed * (planetInfo.clockwise ? 1 : -1);
+        planetInfo.mesh.position.x = Math.cos(planetInfo.angle) * 225 + (offsetX + centerAdjustX);
+        planetInfo.mesh.position.z = Math.sin(planetInfo.angle) * 225 + (offsetZ + centerAdjustZ);
+    });
+
 
     // Check for collision
     if (checkCollision(playerPlanet, enemyPlanet)) {
