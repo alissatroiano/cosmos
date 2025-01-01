@@ -3,10 +3,11 @@ window.focus(); // Capture keys right away (by default focus is on editor)
 // Define Game Constants
 const GAME_CONSTANTS = {
     CAMERA_WIDTH: 960,
-    PLAYER_MAX_SPEED: 0.03,
-    PLAYER_ACCELERATION: 0.001,
-    PLAYER_DECELERATION: 0.0005,
-    BASE_SPEED: 0.01
+    ARC_CENTER_X: 250,
+    TRACK_RADIUS: 225,
+    TRACK_WIDTH: 45,
+    PLAYER_SPEED: 2,
+    MIN_COLLISION_DISTANCE: 40
 };
 
 // Pick a random value from an array
@@ -57,15 +58,18 @@ function createPlanet(color = 0x4287f5, radius = 25) {
     return sphere;
 }
 
+// Create a color array for enemy planets
+const enemyColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
+
 // Create player planet
 const playerPlanet = createPlanet(0x44aa88);
-// Create enemy planet
-const enemyPlanet = createPlanet(0xaa4444);
+// Create enemy planet and use ememyColors array to shuffle planet colors
+let enemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
+
 scene.add(playerPlanet);
 scene.add(enemyPlanet);
 
-// Create orbit track
-// Modify the createOrbitTrack function to accept a radius parameter
+
 // Create a function for a custom orbit track shape
 function createOrbitTrack(trackRadius = 225, color = 0x3333ff, offsetX = 0, offsetZ = 0) {
     const geometry = new THREE.RingGeometry(trackRadius - 20, trackRadius + 20, 64);
@@ -101,12 +105,15 @@ const track2 = createOrbitTrack(225, 0x33ff33, offsetX + centerAdjustX, offsetZ 
 scene.add(track1);
 scene.add(track2);
 
-
-// Game State
+// Game state
 const gameState = {
     started: false,
-    gameOver: false,
-    playerSpeed: GAME_CONSTANTS.BASE_SPEED,
+    lastTimestamp: null,
+    playerAngleMoved: 0,
+    playerAngleInitial: 0,
+    score: 0,
+    lapsCompleted: 0,
+    otherPlanets: [],
     controls: {
         accelerate: false,
         decelerate: false
@@ -129,15 +136,26 @@ function animate() {
     requestAnimationFrame(animate);
     
     // Move player planet
+    playerAngle += 0.035;
     playerAngle += 0.01;
     playerPlanet.position.x = Math.cos(playerAngle) * 225 + centerAdjustX;
     playerPlanet.position.z = Math.sin(playerAngle) * 225 + centerAdjustZ;
     
     // Move enemy planet on track 2
-    enemyAngle += 0.015; // Different speed for enemy
+    enemyAngle += 0.035; // Different speed for enemy
     enemyPlanet.position.x = Math.cos(enemyAngle) * 225 + (offsetX + centerAdjustX);
     enemyPlanet.position.z = Math.sin(enemyAngle) * 225 + (offsetZ + centerAdjustZ);
-    
+
+    // Whenever the player planet goes around the track without colliding with the enemy planet three times, addd another moving enemy planet on enemy track
+    if (playerAngle >= Math.PI * 6) {
+        let newEnemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
+        newEnemyPlanet.position.x = Math.cos(enemyAngle) * 225 + (offsetX + centerAdjustX);
+        newEnemyPlanet.position.z = Math.sin(enemyAngle) * 225 + (offsetZ + centerAdjustZ);
+        scene.add(newEnemyPlanet);
+        gameState.otherPlanets.push({ mesh: newEnemyPlanet, angle: enemyAngle, speed: 0.5, clockwise: true });
+        playerAngle = 0; // Reset player angle
+    }
+
     // Check for collision
     if (checkCollision(playerPlanet, enemyPlanet)) {
         gameOver = true;
@@ -170,9 +188,7 @@ function addStars() {
     const stars = new THREE.Points(starsGeometry, starsMaterial);
     scene.add(stars);
 }
-
 addStars();
-
 
 // Handle window resize
 window.addEventListener('resize', () => {
@@ -186,10 +202,6 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Start animation
-animate();
-
-// Basic controls
 // Control handlers
 document.addEventListener('keydown', (event) => {
     if (gameOver) return;

@@ -4,22 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planet Game</title>
-    <link href="style.css" rel="stylesheet">
-    <style>
-        body { margin: 0; }
-        canvas { display: block; }
-    </style>
+    <link href="styles.css" rel="stylesheet">
 </head>
-<body id="backGround">
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
-                "three/examples/jsm/controls/OrbitControls": "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js"
-            }
-        }
-    </script>
-    <script type="module" src="updates.js"></script>
-</body>
+<body>
+    <div id="score"></div>
+
+    <div id="controls">
+      <div id="buttons">
+        <button id="accelerate">
+          <svg width="30" height="30" viewBox="0 0 10 10">
+            <g transform="rotate(0, 5,5)">
+              <path d="M5,4 L7,6 L3,6 L5,4" />
+            </g>
+          </svg>
+        </button>
+        <button id="decelerate">
+          <svg width="30" height="30" viewBox="0 0 10 10">
+            <g transform="rotate(180, 5,5)">
+              <path d="M5,4 L7,6 L3,6 L5,4" />
+            </g>
+          </svg>
+        </button>
+      </div>
+      <div id="instructions">
+        Press UP to start. Avoid collision with other vehicles by accelerating
+        or decelerating with the UP and DOWN keys.
+      </div>
+    </div>
+    
+    <div id="results">
+      <div class="content">
+        <h1>You hit another vehicle</h1>
+        <p>To reset the game press R</p>
+
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js"></script>
+    <script type="module" src="test.js"></script>
+ 
+    </body>
 </html>
