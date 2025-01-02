@@ -63,10 +63,11 @@ const enemyColors = [
     0x020024, //  blue
     0xf22e62, // Pink
     0x44aa88, // Green
+    0x732bb3, // Purple
     0x8c2b3d, // Red
-    0x8c2b3d, // Red
-    0x8c2b3d, // Red
-]
+    0x2b91b3, // lightt blue
+    0x3db32b // lime green
+     ]
 // Create player planet
 const playerPlanet = createPlanet(0x44aa88);
 // Create enemy planet and use ememyColors array to shuffle planet colors
