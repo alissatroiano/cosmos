@@ -120,6 +120,13 @@ const gameState = {
     }
 };
 
+gameState.otherPlanets.push({ 
+    mesh: enemyPlanet, 
+    angle: Math.PI, 
+    speed: 0.025, 
+    clockwise: true 
+});
+
 let gameOver = false;
 let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
@@ -137,28 +144,35 @@ function animate() {
     requestAnimationFrame(animate);
     
     // Move player planet
-    playerAngle += 0.035;
+    playerAngle += 0.025;
     playerPlanet.position.x = Math.cos(playerAngle) * 225 + centerAdjustX;
     playerPlanet.position.z = Math.sin(playerAngle) * 225 + centerAdjustZ;
     
     // Move enemy planet on track 2
-    enemyAngle += 0.035; // Speed for enemy
+    enemyAngle += 0.025; // Speed for enemy
     enemyPlanet.position.x = Math.cos(enemyAngle) * 225 + (offsetX + centerAdjustX);
     enemyPlanet.position.z = Math.sin(enemyAngle) * 225 + (offsetZ + centerAdjustZ);
 
     // Whenever the player planet goes around the track without colliding with the enemy planet three times, addd another moving enemy planet on enemy track
+    // Spawn new enemy check
     if (playerAngle >= Math.PI * 6) {
         let newEnemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
         scene.add(newEnemyPlanet);
         gameState.otherPlanets.push({ mesh: newEnemyPlanet, angle: enemyAngle, speed: 0.05, clockwise: true });
-        playerAngle = 0; // Reset player angle
+        playerAngle = 0;
     }
 
     // Move new enemy planets on track 2
-    gameState.otherPlanets.forEach((planetInfo) => {
-        planetInfo.angle += planetInfo.speed * (planetInfo.clockwise ? 1 : -1);
-        planetInfo.mesh.position.x = Math.cos(planetInfo.angle) * 225 + (offsetX + centerAdjustX);
-        planetInfo.mesh.position.z = Math.sin(planetInfo.angle) * 225 + (offsetZ + centerAdjustZ);
+    gameState.otherPlanets.forEach((enemyPlanet) => {
+        enemyPlanet.angle += enemyPlanet.speed * (enemyPlanet.clockwise ? 1 : -1);
+        enemyPlanet.mesh.position.x = Math.cos(enemyPlanet.angle) * 225 + (offsetX + centerAdjustX);
+        enemyPlanet.mesh.position.z = Math.sin(enemyPlanet.angle) * 225 + (offsetZ + centerAdjustZ);
+        
+        if (checkCollision(playerPlanet, enemyPlanet.mesh)) {
+            gameOver = true;
+            alert('Game Over! Planets collided!');
+            return;
+        }
     });
 
 
