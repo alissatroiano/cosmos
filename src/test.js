@@ -58,9 +58,15 @@ function createPlanet(color = 0x4287f5, radius = 25) {
     return sphere;
 }
 
-// Create a color array for enemy planets
-const enemyColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
-
+const enemyColors = [
+    0xfcba03, // Yellow
+    0x020024, //  blue
+    0xf22e62, // Pink
+    0x44aa88, // Green
+    0x8c2b3d, // Red
+    0x8c2b3d, // Red
+    0x8c2b3d, // Red
+]
 // Create player planet
 const playerPlanet = createPlanet(0x44aa88);
 // Create enemy planet and use ememyColors array to shuffle planet colors
@@ -234,6 +240,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+// update resetGame() function to reload browser and restart game
 function resetGame() {
     gameOver = false;
     playerAngle = 0;
@@ -245,6 +252,8 @@ function resetGame() {
 document.addEventListener('keydown', (event) => {
     if (event.key === 'r' || event.key === 'R') {
         resetGame();
+        // reload browser
+        window.location.reload();
     }
 });
 
