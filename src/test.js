@@ -60,14 +60,14 @@ function createPlanet(color = 0x4287f5, radius = 25) {
 
 const enemyColors = [
     0xfcba03, // Yellow
-    0x020024, //  blue
+    0x020024, // light blue
     0xf22e62, // Pink
     0x44aa88, // Green
     0x732bb3, // Purple
     0x8c2b3d, // Red
-    0x2b91b3, // lightt blue
+    0xf6ff33, // yellow
     0x3db32b // lime green
-     ]
+]
 // Create player planet
 const playerPlanet = createPlanet(0x44aa88);
 // Create enemy planet and use ememyColors array to shuffle planet colors
@@ -75,7 +75,6 @@ let enemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColor
 
 scene.add(playerPlanet);
 scene.add(enemyPlanet);
-
 
 // Create a function for a custom orbit track shape
 function createOrbitTrack(trackRadius = 225, color = 0x3333ff, offsetX = 0, offsetZ = 0) {
@@ -105,8 +104,8 @@ const offsetZ = Math.sin(angle) * offsetDistance;
 const centerAdjustX = -offsetX / 2;
 const centerAdjustZ = -offsetZ / 2;
 // Create two tracks
-const track1 = createOrbitTrack(225, 0x3333ff, centerAdjustX, centerAdjustZ); // First track
-const track2 = createOrbitTrack(225, 0x33ff33, offsetX + centerAdjustX, offsetZ + centerAdjustZ); // Second track
+const track1 = createOrbitTrack(225, 0x2c3e50, centerAdjustX, centerAdjustZ); // First track
+const track2 = createOrbitTrack(225, 0xff5a33, offsetX + centerAdjustX, offsetZ + centerAdjustZ); // Second track
 
 // Add both tracks to the scene
 scene.add(track1);
