@@ -21,11 +21,14 @@ body {
   
   #score {
     position: absolute;
-    font-size: 1rem;
-    top: 100;
-    left: 100;
+    font-size: 1.25rem;
+    top: 0;
+    left: 0;
+    right: 50;
     color: white;
     max-width: 100px;
+    padding-left: 50px;
+    padding-top: 50px;
     text-align: center;
     line-height: 1.6em;
   }

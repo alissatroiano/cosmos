@@ -6,16 +6,18 @@ body {
 }
 
 #score {
-    position: absolute;
-    font-family: "Press Start 2P", cursive;
-    font-size: 0.9em;
-    color: pink;
-    transform: translate(-50%, -50%);
-    opacity: 0.9;
-    max-width: 100px;
-    text-align: center;
-    line-height: 1.6em;
-  }
+  position: absolute;
+  font-size: 1rem;
+  left: 0;
+  top: 0;
+  left: 100;
+  color: white;
+  max-width: 100px;
+  text-align: center;
+  line-height: 1.6em;
+  right: 0;
+  bottom: 150;
+}
   
   #controls {
     position: absolute;
