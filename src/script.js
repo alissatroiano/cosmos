@@ -60,7 +60,6 @@ function createPlanet(color = 0x7d0ee6, radius = 25) {
 
 const enemyColors = [
     0xfcba03, // Yellow
-    0x2baba9, // light blue
     0xf22e62, // Pink
     0x44aa88, // Green
     0x732bb3, // Purple
@@ -72,6 +71,7 @@ const enemyColors = [
     0xff8800, // Orange
     0x5930c9 // Dark Purple
 ]
+
 // Create player planet
 const playerPlanet = createPlanet(0x44aa88);
 // Create enemy planet and use ememyColors array to shuffle planet colors
@@ -82,20 +82,49 @@ scene.add(enemyPlanet);
 
 // Create a function for a custom orbit track shape
 function createOrbitTrack(trackRadius = 250, color = 0x3333ff, offsetX = 0, offsetZ = 0) {
-    const geometry = new THREE.RingGeometry(trackRadius - 20, trackRadius + 20, 64);
-    const material = new THREE.MeshBasicMaterial({
+    // Create dotted outline
+    const outlineGeometry = new THREE.BufferGeometry();
+    const points = [];
+    const segments = 64;
+
+    // Create points for outer circle
+    for (let i = 0; i <= segments; i++) {
+        const theta = (i / segments) * Math.PI * 2;
+        points.push(
+            Math.cos(theta) * (trackRadius),
+            0,
+            Math.sin(theta) * (trackRadius)
+        );
+    }
+
+    // Create points for inner circle
+    for (let i = segments; i >= 0; i--) {
+        const theta = (i / segments) * Math.PI * 2;
+        points.push(
+            Math.cos(theta) * (trackRadius - 50),
+            0,
+            Math.sin(theta) * (trackRadius - 50)
+        );
+    }
+
+    outlineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
+
+    const outlineMaterial = new THREE.LineDashedMaterial({
         color: color,
-        side: THREE.DoubleSide,
-        opacity: 0.3,
+        dashSize: 10,
+        gapSize: 10,
+        opacity: 1, // Increased opacity since it's the only visual element now
         transparent: true
     });
-    const track = new THREE.Mesh(geometry, material);
-    track.rotation.x = Math.PI / 2; // Rotate to horizontal plane
-    // Apply position offset
-    track.position.x = offsetX;
-    track.position.z = offsetZ;
 
-    return track;
+    const outline = new THREE.Line(outlineGeometry, outlineMaterial);
+    outline.computeLineDistances(); // Required for dashed lines
+
+    outline.rotation.x = Math.PI / 2;
+    outline.position.x = offsetX;
+    outline.position.z = offsetZ;
+
+    return outline;
 }
 
 // Calculate offset for second track
@@ -107,8 +136,8 @@ const offsetZ = Math.sin(angle) * offsetDistance;
 const centerAdjustX = -offsetX / 2;
 const centerAdjustZ = -offsetZ / 2;
 // Create two tracks
-const track1 = createOrbitTrack(250, 0x2c3e50, centerAdjustX, centerAdjustZ); // First track
-const track2 = createOrbitTrack(250, 0xff5a33, offsetX + centerAdjustX, offsetZ + centerAdjustZ); // Second track
+const track1 = createOrbitTrack(250, 0x757575, centerAdjustX, centerAdjustZ); // First track
+const track2 = createOrbitTrack(250, 0x825a5a, offsetX + centerAdjustX, offsetZ + centerAdjustZ); // Second track
 
 // Add both tracks to the scene
 scene.add(track1);
