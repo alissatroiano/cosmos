@@ -1,16 +1,120 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+window.focus(); // Capture keys right away (by default focus is on editor)
 
-// Constants
+// Define Game Constants
 const GAME_CONSTANTS = {
     CAMERA_WIDTH: 960,
     ARC_CENTER_X: 250,
-    TRACK_RADIUS: 225,
+    TRACK_RADIUS: 250,
     TRACK_WIDTH: 45,
-    PLAYER_SPEED: 0.0017,
+    PLAYER_SPEED: .0017,
     MIN_COLLISION_DISTANCE: 40
 };
 
+// Pick a random value from an array
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000); // Black background for space
+
+// Camera setup
+const aspectRatio = window.innerWidth / window.innerHeight;
+const cameraWidth = 960;
+const cameraHeight = cameraWidth / aspectRatio;
+
+const camera = new THREE.OrthographicCamera(
+    cameraWidth / -2,
+    cameraWidth / 2,
+    cameraHeight / 2,
+    cameraHeight / -2,
+    50,
+    700
+);
+camera.position.set(0, -210, 300);
+camera.lookAt(0, 0, 0);
+
+// Renderer setup
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+document.body.appendChild(renderer.domElement);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+scene.add(ambientLight);
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+dirLight.position.set(100, -300, 300);
+dirLight.castShadow = true;
+scene.add(dirLight);
+
+// Create a planet
+function createPlanet(color = 0x7d0ee6, radius = 25) {
+    const geometry = new THREE.SphereGeometry(radius, 32, 32);
+    const material = new THREE.MeshPhongMaterial({
+        color: color,
+        shininess: 25
+    });
+    const sphere = new THREE.Mesh(geometry, material);
+    sphere.castShadow = true;
+    sphere.receiveShadow = true;
+    return sphere;
+}
+
+const enemyColors = [
+    0xfcba03, // Yellow
+    0x2baba9, // light blue
+    0xf22e62, // Pink
+    0x44aa88, // Green
+    0x732bb3, // Purple
+    0x8c2b3d, // Red
+    0xf6ff33, // yellow
+    0x3db32b, // lime green
+    0xc94779, // pink
+    0xeb3f3f, // salmon red
+    0xff8800, // Orange
+    0x5930c9 // Dark Purple
+]
+// Create player planet
+const playerPlanet = createPlanet(0x44aa88);
+// Create enemy planet and use ememyColors array to shuffle planet colors
+let enemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
+
+scene.add(playerPlanet);
+scene.add(enemyPlanet);
+
+// Create a function for a custom orbit track shape
+function createOrbitTrack(trackRadius = 250, color = 0x3333ff, offsetX = 0, offsetZ = 0) {
+    const geometry = new THREE.RingGeometry(trackRadius - 20, trackRadius + 20, 64);
+    const material = new THREE.MeshBasicMaterial({
+        color: color,
+        side: THREE.DoubleSide,
+        opacity: 0.3,
+        transparent: true
+    });
+    const track = new THREE.Mesh(geometry, material);
+    track.rotation.x = Math.PI / 2; // Rotate to horizontal plane
+    // Apply position offset
+    track.position.x = offsetX;
+    track.position.z = offsetZ;
+
+    return track;
+}
+
+// Calculate offset for second track
+var angle = 360 * (Math.PI / 180); // Convert 30 degrees to radians
+const offsetDistance = 250; // Distance to offset the second track
+const offsetX = Math.cos(angle) * offsetDistance;
+const offsetZ = Math.sin(angle) * offsetDistance;
+
+const centerAdjustX = -offsetX / 2;
+const centerAdjustZ = -offsetZ / 2;
+// Create two tracks
+const track1 = createOrbitTrack(250, 0x2c3e50, centerAdjustX, centerAdjustZ); // First track
+const track2 = createOrbitTrack(250, 0xff5a33, offsetX + centerAdjustX, offsetZ + centerAdjustZ); // Second track
+
+// Add both tracks to the scene
+scene.add(track1);
+scene.add(track2);
+
+// Game state
 const gameState = {
     started: false,
     lastTimestamp: null,
@@ -25,326 +129,98 @@ const gameState = {
     }
 };
 
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-document.body.appendChild(renderer.domElement);
-
-// Scene setup
-const scene = new THREE.Scene();
-
-// Set up camera
-const aspectRatio = window.innerWidth / window.innerHeight;
-const cameraWidth = 960;
-const cameraHeight = cameraWidth / aspectRatio;
-
-const camera = new THREE.OrthographicCamera(
-    cameraWidth / -2, // left
-    cameraWidth / 2, // right
-    cameraHeight / 2, // top
-    cameraHeight / -2, // bottom
-    50, // near plane
-    700 // far plane
-);
-
-camera.position.set(0, -210, 300);
-camera.lookAt(0, 0, 0);
-
-// Lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-scene.add(ambientLight);
-
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
-dirLight.position.set(100, -300, 400);
-dirLight.castShadow = true;
-scene.add(dirLight);
-
-// Create a Planet function
-function Planet(color = 0x4287f5, radius = 1) {
-    const planet = new THREE.Group();
-
-    // Create the main sphere
-    const sphere = new THREE.Mesh(
-        new THREE.SphereGeometry(radius, 32, 32),
-        new THREE.MeshPhongMaterial({
-            color: color,
-            shininess: 25
-        })
-    );
-    sphere.castShadow = true;
-    sphere.receiveShadow = true;
-    planet.add(sphere);
-
-    return planet;
-}
-
-// Create player planet
-const playerPlanet = Planet(0x44aa88, 25); // Green color, larger radius
-scene.add(playerPlanet);
-
-playerPlanet.position.set(0, 0, 0); // Set initial position
-
-// Setup track parameters to look like an infinity symbol, so the user's challenge is to not collide with the other planets (using up/down keyboard acceleration controls)
-const arcCenterX = 250; // Distance between the centers of the circles
-const trackRadius = 225;
-const trackWidth = 45;
-const innerTrackRadius = trackRadius - trackWidth;
-const outerTrackRadius = trackRadius + trackWidth;
-
-// Create infinity-shaped track
-function createInfinityTrack() {
-    const trackShape = new THREE.Shape();
-    
-    // Create outer path (right circle)
-    trackShape.absarc(arcCenterX, 0, outerTrackRadius, 0, Math.PI * 2, false);
-    // Create outer path (left circle)
-    trackShape.absarc(-arcCenterX, 0, outerTrackRadius, 0, Math.PI * 2, false);
-    
-    // Create hole (right circle)
-    const holeRight = new THREE.Path();
-    holeRight.absarc(arcCenterX, 0, innerTrackRadius, 0, Math.PI * 2, true);
-    
-    // Create hole (left circle)
-    const holeLeft = new THREE.Path();
-    holeLeft.absarc(-arcCenterX, 0, innerTrackRadius, 0, Math.PI * 2, true);
-    
-    trackShape.holes.push(holeRight);
-    trackShape.holes.push(holeLeft);
-    
-    const geometry = new THREE.ShapeGeometry(trackShape);
-    const material = new THREE.MeshLambertMaterial({
-        color: 0x111111,
-        side: THREE.DoubleSide
-    });
-    
-    const track = new THREE.Mesh(geometry, material);
-    track.rotation.x = Math.PI / 2;
-    track.receiveShadow = true;
-    return track;
-}
-
-// Create and add track
-const track = createInfinityTrack();
-scene.add(track);
-
-
-// Create and add both tracks
-// const innerTrack = createTrack(innerTrackRadius, trackWidth);
-// const outerTrack = createTrack(outerTrackRadius, trackWidth);
-// scene.add(innerTrack);
-// scene.add(outerTrack);
-
-
-// Game state
-let gameStarted = false;
-let lastTimestamp;
-let playerAngleMoved = 0;
-let playerAngleInitial = 0;
-let score;
-let lapsCompleted = 0;
-const speed = 0.0017;
-
-let otherPlanets = [];
-
-// Movement controls
-let accelerate = false;
-let decelerate = false;
-
-function hitDetection() {
-    const playerPosition = new THREE.Vector3();
-    playerPlanet.getWorldPosition(playerPosition);
-
-    for (const planet of otherPlanets) {
-        const planetPosition = new THREE.Vector3();
-        planet.mesh.getWorldPosition(planetPosition);
-
-        const distance = playerPosition.distanceTo(planetPosition);
-        const minDistance = 40; // Adjust this value based on where tracks overlap
-
-        if (distance < minDistance) {
-            console.log('Game Over! Planet collision!');
-            gameStarted = false;
-            return true;
-        }
-    }
-    return false;
-}
-
-
-// Add keyboard controls
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowUp' || event.key === 'w') accelerate = true;
-    if (event.key === 'ArrowDown' || event.key === 's') decelerate = true;
+gameState.otherPlanets.push({
+    mesh: enemyPlanet,
+    angle: Math.PI,
+    speed: 0.025,
+    clockwise: true
 });
 
-document.addEventListener('keyup', (event) => {
-    if (event.key === 'ArrowUp' || event.key === 'w') accelerate = false;
-    if (event.key === 'ArrowDown' || event.key === 's') decelerate = false;
-});
+let gameOver = false;
+let playerAngle = 0;
+let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
+let newEnemyAngle = Math.PI;
 
-function getPlayerSpeed() {
-    if (accelerate) return speed * 2;     // Double speed when accelerating
-    if (decelerate) return speed * 0.5;   // Half speed when decelerating
-    return speed;                         // Normal speed otherwise
+// Player scores 1 point every time they go around the track
+function scorePoint() {
+    gameState.score += 1;
+    document.getElementById('score').innerText = gameState.score;
+    // log score in console
+    console.log('Score: ' + gameState.score);
+}
+
+// Collision detection function
+function checkCollision(planet1, planet2) {
+    const distance = planet1.position.distanceTo(planet2.position);
+    return distance < 50; // Adjust this value based on planet sizes
 }
 
 
-function movePlayerPlanet(timeDelta) {
-    const playerSpeed = getPlayerSpeed();
-    playerAngleMoved -= playerSpeed * timeDelta;
-
-    // Track laps
-    const previousLaps = Math.floor(Math.abs(playerAngleMoved) / (Math.PI * 4)); // Now needs 4π for full lap
-    const currentLaps = Math.floor(Math.abs(playerAngleMoved + (playerSpeed * timeDelta)) / (Math.PI * 4));
-    
-    if (currentLaps > previousLaps) {
-        lapsCompleted = currentLaps;
-        console.log(`Completed lap ${lapsCompleted}`);
-        if (lapsCompleted % 2 === 0) {
-            addOtherPlanet();
-            addOtherPlanet();
-        }
-    }
-
-    const totalPlayerAngle = playerAngleInitial + playerAngleMoved;
-    
-    // Calculate position on infinity track
-    let playerX, playerY;
-    if (totalPlayerAngle % (Math.PI * 2) < Math.PI) {
-        // Right circle
-        playerX = Math.cos(totalPlayerAngle) * outerTrackRadius + arcCenterX;
-        playerY = Math.sin(totalPlayerAngle) * outerTrackRadius;
-    } else {
-        // Left circle
-        playerX = Math.cos(totalPlayerAngle) * outerTrackRadius - arcCenterX;
-        playerY = Math.sin(totalPlayerAngle) * outerTrackRadius;
-    }
-
-    playerPlanet.position.x = playerX;
-    playerPlanet.position.y = playerY;
-    playerPlanet.rotation.z = totalPlayerAngle - Math.PI / 2;
-    playerPlanet.rotation.y += 0.01;
-}
-
-function moveOtherPlanets(timeDelta) {
-    otherPlanets.forEach((planetInfo) => {
-        planetInfo.angle += planetInfo.speed * timeDelta * (planetInfo.clockwise ? 1 : -1);
-        
-        // Calculate position on infinity track (inner track)
-        let x, y;
-        if (planetInfo.angle % (Math.PI * 2) < Math.PI) {
-            // Right circle
-            x = Math.cos(planetInfo.angle) * innerTrackRadius + arcCenterX;
-            y = Math.sin(planetInfo.angle) * innerTrackRadius;
-        } else {
-            // Left circle
-            x = Math.cos(planetInfo.angle) * innerTrackRadius - arcCenterX;
-            y = Math.sin(planetInfo.angle) * innerTrackRadius;
-        }
-        
-        planetInfo.mesh.position.x = x;
-        planetInfo.mesh.position.y = y;
-        planetInfo.mesh.rotation.y += 0.01;
-    });
-}
-
-// Add initial planets
-function addOtherPlanet() {
-    const radius = 32 + Math.random();
-    const color = Math.random() * 0xffffff;
-    const speed = 0.001 + Math.random() * 0.001;
-    const clockwise = Math.random() >= 0.5;
-    const angle = Math.random() * Math.PI * 4;
-
-    const planet = Planet(color, radius);
-    scene.add(planet);
-
-    // Initial position on inner track
-    let x, y;
-    if (angle % (Math.PI * 2) < Math.PI) {
-        x = Math.cos(angle) * innerTrackRadius + arcCenterX;
-        y = Math.sin(angle) * innerTrackRadius;
-    } else {
-        x = Math.cos(angle) * innerTrackRadius - arcCenterX;
-        y = Math.sin(angle) * innerTrackRadius;
-    }
-    planet.position.set(x, y, 0);
-
-    otherPlanets.push({
-        mesh: planet,
-        speed,
-        clockwise,
-        angle
-    });
-}
-
-
-
-// Add some initial planets
-for (let i = 0; i < 1; i++) {
-    addOtherPlanet();
-}
-
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.05;
-controls.screenSpacePanning = false;
-controls.minDistance = 100;
-controls.maxDistance = 500;
-controls.maxPolarAngle = Math.PI / 2;
-
-
-// Animation loop
-function animate(timestamp) {
-    if (!lastTimestamp) {
-        lastTimestamp = timestamp;
-        requestAnimationFrame(animate);
-        return;
-    }
-
-    if (!gameStarted) {
-        gameStarted = true;
-        lastTimestamp = timestamp;
-        playerAngleMoved = 0;
-        lapsCompleted = 0;
-        score = 0;
-    }
-
-    const timeDelta = timestamp - lastTimestamp;
-
-    movePlayerPlanet(timeDelta);
-    moveOtherPlanets(timeDelta);
-
-    // Check for collisions
-    if (hitDetection()) {
-        // Game over logic
-        console.log(`Game Over! Final Score: ${score}`);
-        console.log(`Completed Laps: ${lapsCompleted}`);
-        resetGame();
-    }
-
-    controls.update();
-    renderer.render(scene, camera);
-    lastTimestamp = timestamp;
+// Update animation to move along first track (you can modify this as needed)
+function animate() {
+    if (gameOver) return;
     requestAnimationFrame(animate);
+
+    // Move player planet
+    playerAngle += 0.025;
+    playerPlanet.position.x = Math.cos(playerAngle) * 250 + centerAdjustX;
+    playerPlanet.position.z = Math.sin(playerAngle) * 250 + centerAdjustZ;
+
+    // Move enemy planet on track 2
+    enemyAngle += 0.025; // Speed for enemy
+    enemyPlanet.position.x = Math.cos(enemyAngle) * 250 + (offsetX + centerAdjustX);
+    enemyPlanet.position.z = Math.sin(enemyAngle) * 250 + (offsetZ + centerAdjustZ);
+
+    // Whenever the player planet goes around the track without colliding with the enemy planet three times, addd another moving enemy planet on enemy track
+    // Spawn new enemy check
+    if (playerAngle >= Math.PI * 6) {
+        let newEnemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
+        scene.add(newEnemyPlanet);
+        gameState.otherPlanets.push({ mesh: newEnemyPlanet, angle: enemyAngle, speed: 0.035, clockwise: true });
+        scorePoint();
+        playerAngle = 0;
+    }
+
+    // Move new enemy planets on track 2
+    gameState.otherPlanets.forEach((enemyPlanet) => {
+        enemyPlanet.angle += enemyPlanet.speed * (enemyPlanet.clockwise ? 1 : -1);
+        enemyPlanet.mesh.position.x = Math.cos(enemyPlanet.angle) * 250 + (offsetX + centerAdjustX);
+        enemyPlanet.mesh.position.z = Math.sin(enemyPlanet.angle) * 250 + (offsetZ + centerAdjustZ);
+
+        if (checkCollision(playerPlanet, enemyPlanet.mesh)) {
+            gameOver = true;
+            alert('Game Over! Planets collided! Your score: ' + gameState.score);
+            return;
+        }
+    });
+
+    renderer.render(scene, camera);
 }
 
-function resetGame() {
-    // Reset game state
-    gameStarted = false;
-    playerAngleMoved = 0;
-    lapsCompleted = 0;
-    score = 0;
-    playerAngleInitial = 0;
-    playerPlanet.position.set(0, 0, 0); // Reset player position
-    otherPlanets.forEach((planetInfo) => {
-        scene.remove(planetInfo.mesh);
+// Add some stars
+function addStars() {
+    const starsGeometry = new THREE.BufferGeometry();
+    const starsMaterial = new THREE.PointsMaterial({
+        color: 0xFFFFFF,
+        size: 1,
+        sizeAttenuation: false
     });
-    otherPlanets = [];
-    for (let i = 0; i < 1; i++) {
-        addOtherPlanet();
+
+    const starsVertices = [];
+    for (let i = 0; i < 1000; i++) {
+        const x = (Math.random() - 0.5) * 2000;
+        const y = (Math.random() - 0.5) * 2000;
+        const z = (Math.random() - 0.5) * 2000;
+        starsVertices.push(x, y, z);
     }
+
+    starsGeometry.setAttribute('position',
+        new THREE.Float32BufferAttribute(starsVertices, 3));
+
+    const stars = new THREE.Points(starsGeometry, starsMaterial);
+    scene.add(stars);
 }
+addStars();
 
 // Handle window resize
 window.addEventListener('resize', () => {
@@ -358,6 +234,34 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// Control handlers
+document.addEventListener('keydown', (event) => {
+    if (gameOver) return;
+
+    if (event.key === 'ArrowUp' || event.key === 'w') {
+        playerAngle += .1; // Speed up
+    }
+    if (event.key === 'ArrowDown' || event.key === 's') {
+        playerAngle -= 0.075; // Slow down
+    }
+});
+
+// update resetGame() function to reload browser and restart game
+function resetGame() {
+    gameOver = false;
+    playerAngle = 0;
+    enemyAngle = Math.PI;
+    animate();
+}
+
+// Add reset listener
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'r' || event.key === 'R') {
+        resetGame();
+        // reload browser
+        window.location.reload();
+    }
+});
+
 // Start the game
-resetGame();
-requestAnimationFrame(animate);
+animate();

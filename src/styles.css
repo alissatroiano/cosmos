@@ -21,11 +21,10 @@ body {
   
   #score {
     position: absolute;
-    font-family: "Press Start 2P", cursive;
-    font-size: 0.9em;
+    font-size: 1rem;
+    top: 100;
+    left: 100;
     color: white;
-    transform: translate(-50%, -50%);
-    opacity: 0.9;
     max-width: 100px;
     text-align: center;
     line-height: 1.6em;

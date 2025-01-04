@@ -60,13 +60,15 @@ function createPlanet(color = 0x4287f5, radius = 25) {
 
 const enemyColors = [
     0xfcba03, // Yellow
-    0x020024, // light blue
+    0x2baba9, // light blue
     0xf22e62, // Pink
     0x44aa88, // Green
     0x732bb3, // Purple
     0x8c2b3d, // Red
     0xf6ff33, // yellow
-    0x3db32b // lime green
+    0x3db32b, // lime green
+    0xc94779, // pink
+    0xeb3f3f // salmon red
 ]
 // Create player planet
 const playerPlanet = createPlanet(0x44aa88);
@@ -138,11 +140,20 @@ let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
 let newEnemyAngle = Math.PI;
 
+// Player scores 1 point every time they go around the track
+function scorePoint() {
+    gameState.score += 1;
+    document.getElementById('score').innerText = gameState.score;
+    // log score in console
+    console.log('Score: ' + gameState.score);
+}
+
 // Collision detection function
 function checkCollision(planet1, planet2) {
     const distance = planet1.position.distanceTo(planet2.position);
     return distance < 50; // Adjust this value based on planet sizes
 }
+
 
 // Update animation to move along first track (you can modify this as needed)
 function animate() {
@@ -164,7 +175,7 @@ function animate() {
     if (playerAngle >= Math.PI * 6) {
         let newEnemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
         scene.add(newEnemyPlanet);
-        gameState.otherPlanets.push({ mesh: newEnemyPlanet, angle: enemyAngle, speed: 0.05, clockwise: true });
+        gameState.otherPlanets.push({ mesh: newEnemyPlanet, angle: enemyAngle, speed: 0.035, clockwise: true });
         playerAngle = 0;
     }
 
