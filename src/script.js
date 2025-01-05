@@ -160,7 +160,7 @@ const gameState = {
 gameState.otherPlanets.push({
     mesh: enemyPlanet,
     angle: Math.PI,
-    speed: 0.025,
+    speed: 0.035,
     clockwise: true
 });
 
@@ -168,6 +168,11 @@ let gameOver = false;
 let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
 let newEnemyAngle = Math.PI;
+let velocity = 0.035; // Initial speed for the player
+const maxSpeed = 0.035; // Maximum speed
+const decelerationRate = 0.01; // Deceleration rate per second
+let lastUpdateTime = performance.now();
+
 
 // Player scores 1 point every time they go around the track
 function scorePoint() {
@@ -183,14 +188,24 @@ function checkCollision(planet1, planet2) {
     return distance < 50; // Adjust this value based on planet sizes
 }
 
-
 // Update animation to move along first track (you can modify this as needed)
 function animate() {
     if (gameOver) return;
     requestAnimationFrame(animate);
 
-    // Move player planet
-    playerAngle += 0.025;
+    const currentTime = performance.now();
+    const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds since the last frame
+    lastUpdateTime = currentTime;
+
+    // Apply deceleration to player velocity
+    if (velocity > 0) {
+        velocity = Math.max(velocity - decelerationRate * deltaTime, 0); // Decelerate to 0
+    } else if (velocity < 0) {
+        velocity = Math.min(velocity + decelerationRate * deltaTime, 0); // Accelerate back to 0 for negative values
+    }
+
+    // Move player planet based on velocity
+    playerAngle += velocity;
     playerPlanet.position.x = Math.cos(playerAngle) * 285 + centerAdjustX;
     playerPlanet.position.z = Math.sin(playerAngle) * 285 + centerAdjustZ;
 
@@ -199,8 +214,7 @@ function animate() {
     enemyPlanet.position.x = Math.cos(enemyAngle) * 285 + (offsetX + centerAdjustX);
     enemyPlanet.position.z = Math.sin(enemyAngle) * 285 + (offsetZ + centerAdjustZ);
 
-    // Whenever the player planet goes around the track without colliding with the enemy planet three times, addd another moving enemy planet on enemy track
-    // Spawn new enemy check
+    // Whenever the player planet goes around the track three times, spawn a new enemy planet
     if (playerAngle >= Math.PI * 6) {
         let newEnemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
         scene.add(newEnemyPlanet);
@@ -262,15 +276,25 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Control handlers
+// Bind acceleration to arrow up for mobile & tablet
+document.getElementById('accelerate').addEventListener('click', () => {
+    velocity = Math.min(velocity + 0.01, maxSpeed); // Speed up, capped at maxSpeed
+});
+
+// Bind deceleration to arrow down for mobile & tablet
+document.getElementById('decelerate').addEventListener('click', () => {
+    velocity = Math.max(velocity - 0.01, -maxSpeed); // Slow down, capped at negative maxSpeed
+});
+
 document.addEventListener('keydown', (event) => {
     if (gameOver) return;
 
     if (event.key === 'ArrowUp' || event.key === 'w') {
-        playerAngle += .1; // Speed up
+        velocity = Math.min(velocity + 0.01, maxSpeed); // Speed up, capped at maxSpeed
     }
+
     if (event.key === 'ArrowDown' || event.key === 's') {
-        playerAngle -= 0.075; // Slow down
+        velocity = Math.max(velocity - 0.01, -maxSpeed); // Slow down, capped at negative maxSpeed
     }
 });
 
