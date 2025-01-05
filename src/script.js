@@ -315,5 +315,11 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+document.getElementById('reset').addEventListener('click', () => {
+    resetGame();
+    // reload browser
+    window.location.reload();
+});
+
 // Start the game
 animate();

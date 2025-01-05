@@ -71,6 +71,49 @@ a:visited {
   color: inherit;
 }
 
+.restart .icon {
+  position: absolute;
+  color: aqua;
+  top: 0;
+  right: 0;
+  padding-right: 70px;
+}
+
+.restart .icon i {
+  font-size: 3rem;
+  color: rgb(175, 111, 240);
+}
+
+.fi-refresh {    
+  font-size: 3.5rem;
+  text-align:center;
+  color:#ecf0f1;
+  display: block;
+  margin-top:30px;
+}
+.fi-refresh:hover{
+  -webkit-animation: fi-refresh 1s linear infinite; /* Safari 5, Chrome */
+  -moz-animation: fi-refresh 1s linear infinite; /* Firefox 5-15 */
+  -o-animation: fi-refresh 1s linear infinite; /* Opera 12+ */
+  animation: fi-refresh 1s linear infinite; /* Safari 5, Chrome, Firefox 16+ */
+}
+@-webkit-keyframes fi-refresh {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes fi-refresh {
+  0% {-webkit-transform: rotate(0deg); }
+  100%  { -webkittransform: rotate(360deg); }
+}
+@-moz-keyframes fi-refresh {
+  0% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg); }
+}
+@-o-keyframes fi-refresh {
+  0% { -o-transform: rotate(0deg); }
+  100% { -o-transform: rotate(360deg); }
+}
+
 #score {
   position: absolute;
   font-size: 1.25rem;
