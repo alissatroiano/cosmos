@@ -276,7 +276,16 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Control handlers
+// Bind acceleration to arrow up for mobile & tablet
+document.getElementById('accelerate').addEventListener('click', () => {
+    velocity = Math.min(velocity + 0.01, maxSpeed); // Speed up, capped at maxSpeed
+});
+
+// Bind deceleration to arrow down for mobile & tablet
+document.getElementById('decelerate').addEventListener('click', () => {
+    velocity = Math.max(velocity - 0.01, -maxSpeed); // Slow down, capped at negative maxSpeed
+});
+
 document.addEventListener('keydown', (event) => {
     if (gameOver) return;
 
