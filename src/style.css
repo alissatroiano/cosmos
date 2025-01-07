@@ -32,8 +32,8 @@ body {
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  margin: 10px auto;
   transition: all 0.2s linear;
+  margin-bottom: 50px;
 }
 
 .button-down:hover {
