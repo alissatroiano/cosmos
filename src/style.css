@@ -1,10 +1,51 @@
 
+:root {
+  --primary-color: #6b40eb;
+  --secondary-color: #917ff6;
+  --link-color: #8594e4;
+  --placeholder: #c7cdf5c8;
+  --accent-color: rgb(255 152 252);
+  --light-color: #d5def5;
+  --dark: #2d0d83;
+  --darker: #1b0754;
+  --darkest: #08001f;
+  --text-shadow: 2px 4px 3px rgba(67, 15, 88, 0.1);
+}
+
+@font-face {
+  font-family: 'Oswald';
+  src: url('../assets/fonts/Oswald/Oswald-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf') format('truetype');
+}
+
 body {
   margin: 0;
   /*   background: black; */
   padding: 0;
   color: white;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ---------------- Design Elements */
+
+button {
+  background: none;
+  border: none;
+}
+
+.question {
+  color: rgb(112, 100, 224);
+  font-size: 2.65rem;
+  font-weight: 600;
+  padding-top: 33px;
+}
+
+.question:hover {
+  color: rgba(112, 100, 224, 0.662);
 }
 
 #buttons {
@@ -32,16 +73,16 @@ body {
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  margin: 10px auto;
   transition: all 0.2s linear;
+  margin-bottom: 50px;
 }
 
 .button-down:hover {
-  transform: translate3d(0, 10px, 0);
+  transform: translate3d(0, 5px, 0);
 }
 
 .button-up:hover {
-  transform: translate3d(0, -10px, 0);
+  transform: translate3d(0, -5px, 0);
 }
 
 .button-up::after,
@@ -73,15 +114,36 @@ a:visited {
 
 .restart .icon {
   position: absolute;
-  color: aqua;
   top: 0;
   right: 0;
-  padding-right: 70px;
+  padding-right: 40px;
 }
+
+.nav-row {
+  display: flex;
+}
+
+/* ----------- Top Controls */
 
 .restart .icon i {
   font-size: 3rem;
-  color: rgb(175, 111, 240);
+  color: rgb(132, 25, 240);
+}
+
+.instructions {
+  position: absolute;
+  font-size: 2.8rem;
+  top: 0;
+  right: 0;
+  padding-top: 29px;
+  padding-right: 22px;
+  margin: 0 auto;
+  color: rgb(103, 87, 248);
+}
+
+.restart .icon i:hover {
+  font-size: 3rem;
+  color: rgba(102, 15, 189, 0.786);
 }
 
 .fi-refresh {    
@@ -89,7 +151,8 @@ a:visited {
   text-align:center;
   color:#ecf0f1;
   display: block;
-  margin-top:30px;
+  padding-right: 10px;
+  margin:20px auto;
 }
 .fi-refresh:hover{
   -webkit-animation: fi-refresh 1s linear infinite; /* Safari 5, Chrome */
@@ -112,6 +175,104 @@ a:visited {
 @-o-keyframes fi-refresh {
   0% { -o-transform: rotate(0deg); }
   100% { -o-transform: rotate(360deg); }
+}
+
+/* ---------------- Modal */
+/* Modal Header */
+.modal-header {
+  padding: 2px 16px;
+  background-color: var(--darker);
+  color: white;
+}
+
+/* Modal Body */
+.modal-body {padding: 2px 16px;}
+
+/* Modal Footer */
+.modal-footer {
+  padding: 2px 16px;
+  background-color: var(--darker);
+  color: white;
+}
+
+/* Modal Content */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  -webkit-animation-name: fadeIn; /* Fade in the background */
+  -webkit-animation-duration: 0.4s;
+  animation-name: fadeIn;
+  animation-duration: 0.4s
+}
+
+/* Modal Content */
+.modal-content {
+  position: fixed;
+  bottom: 0;
+  background-color: #fefefe;
+  width: 100%;
+  -webkit-animation-name: slideIn;
+  -webkit-animation-duration: 0.4s;
+  animation-name: slideIn;
+  animation-duration: 0.4s
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  background-color: var(--dark);
+  color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+  padding: 2px 16px;
+  background-color: var(--dark);
+  color: white;
+}
+
+/* Add Animation */
+@-webkit-keyframes slideIn {
+  from {bottom: -300px; opacity: 0} 
+  to {bottom: 0; opacity: 1}
+}
+
+@keyframes slideIn {
+  from {bottom: -300px; opacity: 0}
+  to {bottom: 0; opacity: 1}
+}
+
+@-webkit-keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
 }
 
 #score {
