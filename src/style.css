@@ -37,11 +37,11 @@ body {
 }
 
 .button-down:hover {
-  transform: translate3d(0, 10px, 0);
+  transform: translate3d(0, 5px, 0);
 }
 
 .button-up:hover {
-  transform: translate3d(0, -10px, 0);
+  transform: translate3d(0, -5px, 0);
 }
 
 .button-up::after,
@@ -73,15 +73,19 @@ a:visited {
 
 .restart .icon {
   position: absolute;
-  color: aqua;
   top: 0;
   right: 0;
-  padding-right: 70px;
+  padding-right: 40px;
 }
 
 .restart .icon i {
   font-size: 3rem;
-  color: rgb(175, 111, 240);
+  color: rgb(132, 25, 240);
+}
+
+.restart .icon i:hover {
+  font-size: 3rem;
+  color: rgba(102, 15, 189, 0.786);
 }
 
 .fi-refresh {    
