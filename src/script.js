@@ -321,5 +321,7 @@ document.getElementById('reset').addEventListener('click', () => {
     window.location.reload();
 });
 
+// Add listener for pop up modal with 'how to play' instructions
+
 // Start the game
 animate();
