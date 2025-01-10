@@ -187,19 +187,27 @@ a:visited {
 
 }
 
+.how-to-restart,
 .how-to-play,
 .about {
   font-family: "tt-frantz-b", sans-serif;
-  font-size: 3.5rem;
+  font-size: 2.5rem;
   letter-spacing: 5px;
   font-weight: 400;
   color: #705ff4;
+}
+
+.how-to-restart {
+  margin-top: 30px;
 }
 
 .how-to-play {
   padding-top: 20px;
 }
 
+.modal p {
+  font-size: 14px;
+}
 
 /* Modal Body */
 .modal-body {padding: 2px 16px;}
@@ -219,7 +227,7 @@ a:visited {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 100%; /* Full width */
+  max-width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
@@ -227,16 +235,20 @@ a:visited {
   -webkit-animation-name: fadeIn; /* Fade in the background */
   -webkit-animation-duration: 0.4s;
   animation-name: fadeIn;
-  animation-duration: 0.4s
+  animation-duration: 0.4s;
+  margin: 0px auto;
 }
 
 /* Modal Content */
 .modal-content {
   position: absolute;
   bottom: 0;
+  margin: 0 auto;
   top: 0;
+  left: 0;
+  right: 0;
   margin-top: 50px;
-  max-width: 100%;
+  max-width: 85%;
   height: 80%;
   -webkit-animation-name: slideIn;
   -webkit-animation-duration: 0.4s;
