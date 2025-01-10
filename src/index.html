@@ -1,112 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cosmos</title>
+    <!--Load Google Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Oswald:wght@200..700&family=Space+Grotesk:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Adobe Font-->
+    <link rel="stylesheet" href="https://use.typekit.net/nfe5dqs.css" />
+    <!--Load Font Awesome -->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css"
+    />
+    <!--Bootstrap-->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <!--Favicon Link-->
+    <link
+      rel="shortcut icon"
+      type="image/ico"
+      href="static/images/cosmos.png"
+    />
+    <link href="style.css" rel="stylesheet" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cosmos</title>
-  <!--Load Google Fonts-->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Oswald:wght@200..700&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
-  <!-- Adobe Font-->
-  <link rel="stylesheet" href="https://use.typekit.net/nfe5dqs.css">
-  <!--Load Font Awesome -->
-  <link type="text/css" rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" />
-  <!--Bootstrap-->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-   <!--Favicon Link-->
-   <link rel="shortcut icon" type="image/ico" href="static/images/cosmos.png" />   <link href="style.css" rel="stylesheet">
-</head>
-
-<body>
-  <div id="score"></div>
-  <div id="controls">
-
-    <div id="instructions">
+  <body>
+    <div id="score"></div>
+    <div id="controls">
+      <div id="instructions"></div>
     </div>
-  </div>
-  <div id="buttons">
-    <div class="button-up" id="accelerate"></div>
-    <div class="button-down" id="decelerate"></div>
-
-  </div>
-  <div id="results">
-    <div class="content">
-      <h1>You hit another vehicle</h1>
-      <p>To reset the game press R</p>
+    <div id="buttons">
+      <div class="button-up" id="accelerate"></div>
+      <div class="button-down" id="decelerate"></div>
     </div>
-  </div>
-  <div class="restart">
-    <div class="icon">
-      <button class="btn" id="reset">
-        <i class="fi-refresh"></i>
-      </button>
-      <button class="instructions" id="myBtn">
-        <p>?</p>
-      </button>
+    <div id="results">
+      <div class="content"></div>
     </div>
-  </div>
-
-  <!-- The Modal -->
-  <div id="myModal" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-      <div class="modal-header">
-        <span class="close">&times;</span>
+    <div class="restart">
+      <div class="icon">
+        <button class="btn" id="reset">
+          <i class="fi-refresh"></i>
+        </button>
+        <button class="instructions" id="myBtn">
+          <p>?</p>
+        </button>
       </div>
-      <div class="modal-body">
-        <h2 class="how-to-play">How to Play</h2>
-        <br>
-        <p>Some text in the Modal Body</p>
-        <p>Some other text...</p>
-      </div>
-     
     </div>
 
-  </div>
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+          <h2 class="about">Cosmos</h2>
+          <p>
+          The main objective of Cosmos is to go around your planet's track as many times as possible!
+          Cosmos is a physics-based space game. You <strong>lose</strong> Cosmos if and when you collide with another planet.</p>
+          <h2 class="how-to-play">How to Play</h2>
+        <p>
+            <strong>The planet you control will always be the purple planet on the LEFT track</strong>
+          </strong>
+          If you're playing on <strong>Desktop</strong>,
+            use the Arrow Up and Arrow Down keys on your keyboard to control
+            your planet.
+          </p>
+          <p>If you're playing on <strong>Mobile</strong>,
+            Use the arrow controls on the bottom left of the page to control your planet.
+            .</p>
+        </div>
+      </div>
+    </div>
 
-  <script>
-    // Get the modal
-    var modal = document.getElementById("myModal");
+    <script>
+      // Get the modal
+      var modal = document.getElementById("myModal");
 
-    // Get the button that opens the modal
-    var btn = document.getElementById("myBtn");
+      // Get the button that opens the modal
+      var btn = document.getElementById("myBtn");
 
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
 
-    // When the user clicks the button, open the modal 
-    btn.onclick = function () {
-      modal.style.display = "block";
-    }
+      // When the user clicks the button, open the modal
+      btn.onclick = function () {
+        modal.style.display = "block";
+      };
 
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function () {
-      12
-      modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-      if (event.target == modal) {
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        12;
         modal.style.display = "none";
-      }
-    }
-  </script>
-  <!--Script-->
-  <script type="module" src="script.js"></script>
-  <!--Three JS-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js"></script>
-  <!--Bootstrap Scripts-->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-    crossorigin="anonymous"></script>
-</body>
+      };
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+    <!--Script-->
+    <script type="module" src="script.js"></script>
+    <!--Three JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js"></script>
+    <!--Bootstrap Scripts-->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
