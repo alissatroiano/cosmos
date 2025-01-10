@@ -67,7 +67,7 @@ const enemyColors = [
     0xc94779, // pink
     0xeb3f3f, // salmon red
     0xff8800, // Orange
-    0x3babd4,  // Blue
+    0x3babd4, // Blue
     0xf70fc9 // Neon Pink
 ]
 
@@ -218,7 +218,12 @@ function animate() {
     if (playerAngle >= Math.PI * 6) {
         let newEnemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
         scene.add(newEnemyPlanet);
-        gameState.otherPlanets.push({ mesh: newEnemyPlanet, angle: enemyAngle, speed: 0.030, clockwise: true });
+        gameState.otherPlanets.push({
+            mesh: newEnemyPlanet,
+            angle: enemyAngle,
+            speed: 0.030,
+            clockwise: true
+        });
         scorePoint();
         playerAngle = 0;
     }
@@ -231,7 +236,7 @@ function animate() {
 
         if (checkCollision(playerPlanet, enemyPlanet.mesh)) {
             gameOver = true;
-            alert('Game Over! Planets collided! Your score: ' + gameState.score);
+            alert('Game Over! Planets collided! Your score: ' + gameState.score + 'Press R or click the reload button to play again!');
             return;
         }
     });
@@ -321,7 +326,11 @@ document.getElementById('reset').addEventListener('click', () => {
     window.location.reload();
 });
 
-// Add listener for pop up modal with 'how to play' instructions
+// Add event listener for mobile & tablet
+document.getElementById('accelerate').addEventListener('touchstart', () => {
+    velocity = Math.min(velocity + 0.01, maxSpeed); // Speed up, capped at maxSpeed
+});
+
 
 // Start the game
 animate();
