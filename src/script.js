@@ -128,7 +128,7 @@ function createOrbitTrack(trackRadius = 285, color = 0x3333ff, offsetX = 0, offs
 
 // Calculate offset for second track
 var angle = 360 * (Math.PI / 180); // Convert 30 degrees to radians
-const offsetDistance = 285; // Distance to offset the second track
+const offsetDistance = 265; // Distance to offset the second track
 const offsetX = Math.cos(angle) * offsetDistance;
 const offsetZ = Math.sin(angle) * offsetDistance;
 
@@ -206,13 +206,13 @@ function animate() {
 
     // Move player planet based on velocity
     playerAngle += velocity;
-    playerPlanet.position.x = Math.cos(playerAngle) * 285 + centerAdjustX;
-    playerPlanet.position.z = Math.sin(playerAngle) * 285 + centerAdjustZ;
+    playerPlanet.position.x = Math.cos(playerAngle) * 280 + centerAdjustX;
+    playerPlanet.position.z = Math.sin(playerAngle) * 280 + centerAdjustZ;
 
     // Move enemy planet on track 2
     enemyAngle += 0.025; // Speed for enemy
-    enemyPlanet.position.x = Math.cos(enemyAngle) * 285 + (offsetX + centerAdjustX);
-    enemyPlanet.position.z = Math.sin(enemyAngle) * 285 + (offsetZ + centerAdjustZ);
+    enemyPlanet.position.x = Math.cos(enemyAngle) * 280 + (offsetX + centerAdjustX);
+    enemyPlanet.position.z = Math.sin(enemyAngle) * 280 + (offsetZ + centerAdjustZ);
 
     // Whenever the player planet goes around the track three times, spawn a new enemy planet
     if (playerAngle >= Math.PI * 6) {
