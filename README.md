@@ -11,7 +11,7 @@
 
 ## Cosmos
 
-Cosmos is a physics-based three.js game that challenges players to use its' mechanics to control their planet's movement and avoid colliding into other objects.
+Cosmos is a space-themed web game that challenges players to control their planet's movement and avoid colliding into other objects. The main objective of Cosmos is to use game mechanics to move around your orbit as many times as possible without colliding into other space objects.
 
 ## Installation
 
