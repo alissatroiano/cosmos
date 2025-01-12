@@ -26,7 +26,6 @@ Cosmos is a space-themed web game that challenges players to control their plane
 1. Visit [Cosmos Repository](https://github.com/alissatroiano/cosmos) 
 2. Click `Code` to follow instructions for cloning via HTTPD, SSH, or GitHub Desktop
 
-
 ## How To Play
 
 ### Desktop
