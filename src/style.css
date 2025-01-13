@@ -56,12 +56,13 @@ button {
   margin-left: 30px;
   /* right: 0; */
 }
+
 .button-up {
   position: relative;
   padding: 10px;
   margin: 10px auto;
-  height: 30px;
-  width: 30px;
+  height: 35px;
+  width: 35px;
   border-radius: 50%;
   transition: all 0.2s linear;
 }
@@ -69,10 +70,8 @@ button {
 .button-down {
   position: relative;
   padding: 10px;
-  margin: 0 auto;
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
+  height: 35px;
+  width: 35px;
   transition: all 0.2s linear;
   margin-bottom: 50px;
 }
@@ -94,18 +93,21 @@ button {
   display: block;
   width: 25px;
   height: 25px;
-  border-top: 2px solid #fff;
-  border-left: 2px solid #fff;
+  border-top: 4px solid var(--secondary-color);
+  border-left: 4px solid var(--secondary-color);
 }
+
 .button-up::after {
   top: 20px;
   transform: rotate(45deg);
+  
 }
 
 .button-down::after {
   top: 10px;
   transform: rotate(225deg);
 }
+
 
 a,
 a:visited {

@@ -46,7 +46,7 @@ dirLight.castShadow = true;
 scene.add(dirLight);
 
 // Create a planet
-function createPlanet(color = 0x732bb3, radius = 30) {
+function createPlanet(color = 0x732bb3, radius = 27) {
     const geometry = new THREE.SphereGeometry(radius, 32, 32);
     const material = new THREE.MeshPhongMaterial({
         color: color,
@@ -58,18 +58,6 @@ function createPlanet(color = 0x732bb3, radius = 30) {
     return sphere;
 }
 
-// Use three.js to create meteor or asteroid
-function createMeteor(color = 0x732bb3, radius = 30) {
-    const geometry = new THREE.SphereGeometry(radius, 32, 32);
-    const material = new THREE.MeshPhongMaterial({
-        color: color,
-        shininess: 35
-    });
-    const sphere = new THREE.Mesh(geometry, material);
-    sphere.castShadow = true;
-    sphere.receiveShadow = true;
-    return sphere;
-}
 const enemyColors = [
     0xfcba03, // Yellow
     0xf22e62, // Pink
@@ -172,19 +160,20 @@ const gameState = {
 gameState.otherPlanets.push({
     mesh: enemyPlanet,
     angle: Math.PI,
-    speed: 0.035,
+    speed: 0.025,
     clockwise: true
 });
 
+// Setup game settings
 let gameOver = false;
 let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
 let newEnemyAngle = Math.PI;
-let velocity = 0.035; // Initial speed for the player
-const maxSpeed = 0.035; // Maximum speed
+let velocity = 0.025; // Initial speed for the player
+const maxSpeed = 0.0425; // Maximum speed
+const minimumSpeed = 0.015;
 const decelerationRate = 0.01; // Deceleration rate per second
 let lastUpdateTime = performance.now();
-
 
 // Player scores 1 point every time they go around the track
 function scorePoint() {
@@ -227,7 +216,7 @@ function animate() {
     enemyPlanet.position.z = Math.sin(enemyAngle) * 280 + (offsetZ + centerAdjustZ);
 
     // Whenever the player planet goes around the track three times, spawn a new enemy planet
-    if (playerAngle >= Math.PI * 6) {
+    if (playerAngle >= Math.PI * 4) {
         let newEnemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
         scene.add(newEnemyPlanet);
         gameState.otherPlanets.push({
@@ -300,7 +289,7 @@ document.getElementById('accelerate').addEventListener('click', () => {
 
 // Bind deceleration to arrow down for mobile & tablet
 document.getElementById('decelerate').addEventListener('click', () => {
-    velocity = Math.max(velocity - 0.01, -maxSpeed); // Slow down, capped at negative maxSpeed
+    velocity = minimumSpeed; // Slow down, using minimumSpeed
 });
 
 document.addEventListener('keydown', (event) => {
@@ -311,7 +300,7 @@ document.addEventListener('keydown', (event) => {
     }
 
     if (event.key === 'ArrowDown' || event.key === 's') {
-        velocity = Math.max(velocity - 0.01, -maxSpeed); // Slow down, capped at negative maxSpeed
+        velocity = minimumSpeed; // Slow down, using minimumSpeed
     }
 });
 
