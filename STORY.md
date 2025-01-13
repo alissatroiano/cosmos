@@ -44,26 +44,21 @@ I wrote code comments with common Three.JS terms to prompt AQ into setting up th
 
 I then prompted AQ to create a dark background and add stars to create an outer space environment.
 
-  
-The following tools and technologies were used to build Cosmos
-
-#### Technologies
+#### Tools & Technologies
 
 - [Three.JS]()
 - [Amazon Q]()
 - [CSS]()
 - [HTML]()
-
-#### Hosting Provider
-- [Amazon Amplify](https://aws.amazon.com/amplify) was used to deploy [Cosmos](https://main.d508w1gr1qq2g.amplifyapp.com/) to a live web server. 
+- [Amazon Amplify](https://aws.amazon.com/amplify)
 
 ## Challenges I ran into
 
-### Explaining the game to Amazon Q
+#### Early Development
 
-In the early stages of development, I had some trouble 
+In the early stages of development, I had some trouble with AQ's understanding of how I wanted the game to work
 
-#### Setting up the track
+#### Setting up the "Infinity Track"
 
 During the first few attempts  
 
