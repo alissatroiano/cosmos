@@ -2,7 +2,7 @@ window.focus(); // Capture keys right away (by default focus is on editor)
 
 // Create Scene
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000000); // Black background for space
+scene.background = new THREE.Color(0x0a0a0a); // Black background for space
 
 // Camera setup
 const aspectRatio = window.innerWidth / window.innerHeight;
@@ -164,7 +164,7 @@ let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
 let newEnemyAngle = Math.PI;
 let velocity = 0.025; // Initial speed for the player
 const maxSpeed = 0.035; // Maximum speed
-const minimumSpeed = 0.015;
+const minimumSpeed = 0.010;
 const decelerationRate = 0.01; // Deceleration rate per second
 let lastUpdateTime = performance.now();
 
@@ -203,12 +203,8 @@ function animate() {
     playerPlanet.position.x = Math.cos(playerAngle) * 280 + centerAdjustX;
     playerPlanet.position.z = Math.sin(playerAngle) * 280 + centerAdjustZ;
 
-    // Move enemy planet on track 2
-    enemyAngle += 0.020;
-    enemyPlanet.position.x = Math.cos(enemyAngle) * 100 + (offsetX + centerAdjustX);
-    enemyPlanet.position.z = Math.sin(enemyAngle) * 100 + (offsetZ + centerAdjustZ);
 
-    // Whenever the player planet goes around the track three times, spawn a new enemy planet
+    // Whenever the player planet goes around the track two times, spawn a new enemy planet
     if (playerAngle >= Math.PI * 4) {
         let newEnemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
         scene.add(newEnemyPlanet);
