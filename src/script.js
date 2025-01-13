@@ -1,4 +1,3 @@
-
 window.focus(); // Capture keys right away (by default focus is on editor)
 
 // Create Scene
@@ -37,11 +36,11 @@ dirLight.castShadow = true;
 scene.add(dirLight);
 
 // Create a planet
-function createPlanet(color = [], radius = 27) {
-    const geometry = new THREE.SphereGeometry(radius, 27, 27);
+function createPlanet(color = [], radius = 25) {
+    const geometry = new THREE.SphereGeometry(radius, 25, 25);
     const material = new THREE.MeshPhongMaterial({
         color: color,
-        shininess: 20
+        shininess: 30
     });
     const sphere = new THREE.Mesh(geometry, material);
     sphere.castShadow = true;
@@ -105,7 +104,7 @@ function createOrbitTrack(trackRadius = 260, color = 0x3333ff, offsetX = 0, offs
         color: color,
         dashSize: 10,
         gapSize: 15,
-        opacity: .65, // Decrease opacity
+        opacity: .85, // Increased opacity since it's the only visual element now
         transparent: true
     });
 
@@ -154,6 +153,7 @@ gameState.otherPlanets.push({
     mesh: enemyPlanet,
     angle: Math.PI,
     speed: 0.025,
+    radius: 250, // Adjust as needed
     clockwise: true
 });
 
@@ -163,7 +163,7 @@ let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
 let newEnemyAngle = Math.PI;
 let velocity = 0.025; // Initial speed for the player
-const maxSpeed = 0.0425; // Maximum speed
+const maxSpeed = 0.035; // Maximum speed
 const minimumSpeed = 0.015;
 const decelerationRate = 0.01; // Deceleration rate per second
 let lastUpdateTime = performance.now();
@@ -204,9 +204,9 @@ function animate() {
     playerPlanet.position.z = Math.sin(playerAngle) * 280 + centerAdjustZ;
 
     // Move enemy planet on track 2
-    enemyAngle += 0.020; // Initial speed for enemy
-    enemyPlanet.position.x = Math.cos(enemyAngle) * 250 + (offsetX + centerAdjustX);
-    enemyPlanet.position.z = Math.sin(enemyAngle) * 250 + (offsetZ + centerAdjustZ);
+    enemyAngle += 0.020;
+    enemyPlanet.position.x = Math.cos(enemyAngle) * 100 + (offsetX + centerAdjustX);
+    enemyPlanet.position.z = Math.sin(enemyAngle) * 100 + (offsetZ + centerAdjustZ);
 
     // Whenever the player planet goes around the track three times, spawn a new enemy planet
     if (playerAngle >= Math.PI * 4) {
@@ -275,7 +275,7 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Bind acceleration to arrow up for mobile & tablet
+// Bind acceleration to arrow up button for mobile & tablet
 document.getElementById('accelerate').addEventListener('click', () => {
     velocity = Math.min(velocity + 0.01, maxSpeed); // Speed up, capped at maxSpeed
 });
@@ -285,14 +285,11 @@ document.getElementById('decelerate').addEventListener('click', () => {
     velocity = minimumSpeed; // Slow down, using minimumSpeed
 });
 
+// Accelerate player planet speed on keyup and decelerate on keydown
 document.addEventListener('keydown', (event) => {
-    if (gameOver) return;
-
-    if (event.key === 'ArrowUp' || event.key === 'w') {
+    if (event.key === 'ArrowUp') {
         velocity = Math.min(velocity + 0.01, maxSpeed); // Speed up, capped at maxSpeed
-    }
-
-    if (event.key === 'ArrowDown' || event.key === 's') {
+    } else if (event.key === 'ArrowDown') {
         velocity = minimumSpeed; // Slow down, using minimumSpeed
     }
 });

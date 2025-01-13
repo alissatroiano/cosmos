@@ -93,8 +93,8 @@ button {
   display: block;
   width: 25px;
   height: 25px;
-  border-top: 4px solid var(--secondary-color);
-  border-left: 4px solid var(--secondary-color);
+  border-top: 3px solid var(--secondary-color);
+  border-left: 3px solid var(--secondary-color);
 }
 
 .button-up::after {
@@ -107,7 +107,6 @@ button {
   top: 10px;
   transform: rotate(225deg);
 }
-
 
 a,
 a:visited {
