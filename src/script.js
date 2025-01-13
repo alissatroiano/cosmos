@@ -58,6 +58,18 @@ function createPlanet(color = 0x732bb3, radius = 30) {
     return sphere;
 }
 
+// Use three.js to create meteor or asteroid
+function createMeteor(color = 0x732bb3, radius = 30) {
+    const geometry = new THREE.SphereGeometry(radius, 32, 32);
+    const material = new THREE.MeshPhongMaterial({
+        color: color,
+        shininess: 35
+    });
+    const sphere = new THREE.Mesh(geometry, material);
+    sphere.castShadow = true;
+    sphere.receiveShadow = true;
+    return sphere;
+}
 const enemyColors = [
     0xfcba03, // Yellow
     0xf22e62, // Pink
