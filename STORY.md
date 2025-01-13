@@ -30,18 +30,21 @@ The main objective of Cosmos is to use the game's mechanics to move around your 
 
 ## How I built it
 
-I followed [this tutorial](https://www.youtube.com/watch?v=JhgBwJn1bQw) to learn the basics of Three.JS and get a general idea of how my planets would move in orbit. Then, I put Amazon Q Developer ("AQ") to work.
+I followed [this tutorial](https://www.youtube.com/watch?v=JhgBwJn1bQw) to learn the basics of Three.JS and get a general idea of how my planets would move in orbit. Once I had a general understanding of the framework, I prompted Amazon Q Developer ("AQ") to change the game's mechanics, create a space theme, and use planets (spheres) instead of vehicles (boxes) for objects.
 
 ### Working with Q
 
-Because I was part of GitHub Copilot's Beta Testing team in 2022, I already knew that prompts must be detailed, logical, and specific when working with a local IDE assistant of this nature. I also knew to start with simple prompts
+Because I was part of GitHub Copilot's Beta Testing team in 2022, I already knew that prompts must be detailed, logical, and specific when working with a local IDE assistant of this nature.
 
-I used common Three.JS terms to have AQ setup the scene, camera, and renderer.  I then prompted AQ to create a space background and add stars.
+#### Scene
 
-my local IDE to update game physics, create a space theme, and use planets (spheres) instead of vehicles (boxes) for objects. 
+I wrote code comments with common Three.JS terms to prompt AQ into setting up the scene, camera, and renderer. 
+
+#### UX 
+
+I then prompted AQ to create a dark background and add stars to create an outer space environment.
+
   
- I wrote logical, detailed code comments and waited for Amazon Q to generate suggestions. When I had a question about why something was or wasn't working in its' intended manner, I started a chat with Amazon Q to get feedback.
-
 The following tools and technologies were used to build Cosmos
 
 #### Technologies
