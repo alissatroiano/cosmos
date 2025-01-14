@@ -72,63 +72,44 @@ scene.add(playerPlanet);
 scene.add(enemyPlanet);
 
 // Create a function for a custom orbit track shape
-function createOrbitTrack(trackRadius = 260, color = 0x3333ff, offsetX = 0, offsetZ = 0) {
-    // Create dotted outline
+function createOrbitTrack(trackRadius, color, centerX, centerZ) {
     const outlineGeometry = new THREE.BufferGeometry();
     const points = [];
     const segments = 64;
 
-    // Create points for outer circle
     for (let i = 0; i <= segments; i++) {
         const theta = (i / segments) * Math.PI * 2;
         points.push(
-            Math.cos(theta) * (trackRadius),
+            Math.cos(theta) * trackRadius + centerX,
             0,
-            Math.sin(theta) * (trackRadius)
-        );
-    }
-
-    // Create points for inner circle
-    for (let i = segments; i >= 0; i--) {
-        const theta = (i / segments) * Math.PI * 2;
-        points.push(
-            Math.cos(theta) * (trackRadius - 50),
-            0,
-            Math.sin(theta) * (trackRadius - 50)
+            Math.sin(theta) * trackRadius + centerZ
         );
     }
 
     outlineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
-
     const outlineMaterial = new THREE.LineDashedMaterial({
         color: color,
         dashSize: 10,
         gapSize: 15,
-        opacity: .85, // Increased opacity since it's the only visual element now
-        transparent: true
     });
 
-    const outline = new THREE.Line(outlineGeometry, outlineMaterial);
-    outline.computeLineDistances(); // Required for dashed lines
-
-    outline.rotation.x = Math.PI / 2;
-    outline.position.x = offsetX;
-    outline.position.z = offsetZ;
-
+    const outline = new THREE.LineLoop(outlineGeometry, outlineMaterial);
+    outline.computeLineDistances(); // Enable dashed line effect
     return outline;
 }
 
 // Calculate offset for second track
-var angle = 360 * (Math.PI / 180); // Convert 30 degrees to radians
-const offsetDistance = 250; // Distance to offset the second track
+var angle = 360 * (Math.PI / 180);
+
+const offsetDistance = 280; // Distance to offset the second track
 const offsetX = Math.cos(angle) * offsetDistance;
 const offsetZ = Math.sin(angle) * offsetDistance;
 
 const centerAdjustX = -offsetX / 2;
 const centerAdjustZ = -offsetZ / 2;
 // Create two tracks
-const track1 = createOrbitTrack(260, 0x757575, centerAdjustX, centerAdjustZ); // First track
-const track2 = createOrbitTrack(260, 0x825a5a, offsetX + centerAdjustX, offsetZ + centerAdjustZ); // Second track
+const track1 = createOrbitTrack(280, 0x32a852, centerAdjustX, centerAdjustZ); // First track
+const track2 = createOrbitTrack(280, 0x825a5a, offsetX + centerAdjustX, offsetZ + centerAdjustZ); // Second track
 
 // Add both tracks to the scene
 scene.add(track1);
@@ -153,7 +134,7 @@ gameState.otherPlanets.push({
     mesh: enemyPlanet,
     angle: Math.PI,
     speed: 0.025,
-    radius: 250, // Adjust as needed
+    radius: 260, // Adjust as needed
     clockwise: true
 });
 
@@ -162,9 +143,11 @@ let gameOver = false;
 let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
 let newEnemyAngle = Math.PI;
+// Define constant velocity
+const constantVelocity = 0.025; 
 let velocity = 0.025; // Initial speed for the player
-const maxSpeed = 0.035; // Maximum speed
-const minimumSpeed = 0.010;
+const maxSpeed = 0.0545; // Maximum speed
+const minimumSpeed = 0.015;
 const decelerationRate = 0.01; // Deceleration rate per second
 let lastUpdateTime = performance.now();
 
@@ -182,7 +165,9 @@ function checkCollision(planet1, planet2) {
     return distance < 50; // Adjust this value based on planet sizes
 }
 
-// Update animation to move along first track
+// Track the number of player loops
+let loopCount = 0;
+
 function animate() {
     if (gameOver) return;
     requestAnimationFrame(animate);
@@ -190,43 +175,63 @@ function animate() {
     const currentTime = performance.now();
     const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds since the last frame
     lastUpdateTime = currentTime;
-
+    
+    
     // Apply deceleration to player velocity
     if (velocity > 0) {
-        velocity = Math.max(velocity - decelerationRate * deltaTime, 0); // Decelerate to 0
+        velocity = Math.max(velocity - decelerationRate * deltaTime, 0);
     } else if (velocity < 0) {
-        velocity = Math.min(velocity + decelerationRate * deltaTime, 0); // Accelerate back to 0 for negative values
+        velocity = Math.min(velocity + decelerationRate * deltaTime, 0);
     }
+
+    // Define a unified track radius for circular paths
+    const trackRadius = 280;
 
     // Move player planet based on velocity
     playerAngle += velocity;
-    playerPlanet.position.x = Math.cos(playerAngle) * 280 + centerAdjustX;
-    playerPlanet.position.z = Math.sin(playerAngle) * 280 + centerAdjustZ;
+    playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
+    playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
 
+    // Track player loops and spawn enemy planets every 3 loops
+    if (playerAngle >= Math.PI * 2) {
+        playerAngle -= Math.PI * 2; // Reset angle after each loop
+        loopCount++;
+        scorePoint(); // Score a point for each loop
 
-    // Whenever the player planet goes around the track two times, spawn a new enemy planet
-    if (playerAngle >= Math.PI * 4) {
-        let newEnemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
-        scene.add(newEnemyPlanet);
-        gameState.otherPlanets.push({
-            mesh: newEnemyPlanet,
-            angle: enemyAngle,
-            speed: 0.025,
-            clockwise: true
-        });
-        scorePoint();
-        playerAngle = 0;
+        // Spawn a new enemy planet every 3 loops
+        if (loopCount % 3 === 0) {
+            const randomColor = enemyColors[Math.floor(Math.random() * enemyColors.length)];
+            const randomAngle = Math.random() * Math.PI * 2; // Random spawn angle
+            const randomSpeed = 0.02 + Math.random() * 0.02; // Random speed between 0.02 and 0.05
+
+            const newEnemyPlanet = createPlanet(randomColor, Math.random() * 20 + 10); // Random radius
+            newEnemyPlanet.position.x = Math.cos(randomAngle) * trackRadius + (offsetX + centerAdjustX);
+            newEnemyPlanet.position.z = Math.sin(randomAngle) * trackRadius + (offsetZ + centerAdjustZ);
+
+            scene.add(newEnemyPlanet);
+
+            // Add enemy planet to game state with unified direction
+            gameState.otherPlanets.push({
+                mesh: newEnemyPlanet,
+                angle: randomAngle,
+                speed: randomSpeed,
+                clockwise: false, // Unified direction
+            });
+        }
     }
 
-    // Move new enemy planets on track 2
+    // Move enemy planets along track
     gameState.otherPlanets.forEach((enemyPlanet) => {
-        enemyPlanet.angle += enemyPlanet.speed * (enemyPlanet.clockwise ? 1 : -1);
-        enemyPlanet.mesh.position.x = Math.cos(enemyPlanet.angle) * 285 + (offsetX + centerAdjustX);
-        enemyPlanet.mesh.position.z = Math.sin(enemyPlanet.angle) * 285 + (offsetZ + centerAdjustZ);
+        enemyPlanet.angle += enemyPlanet.speed * (enemyPlanet.clockwise ? 1 : 1);
+        enemyPlanet.mesh.position.x = Math.cos(enemyPlanet.angle) * trackRadius + (offsetX + centerAdjustX);
+        enemyPlanet.mesh.position.z = Math.sin(enemyPlanet.angle) * trackRadius + (offsetZ + centerAdjustZ);
 
+        // Check for collisions with the player planet
         if (checkCollision(playerPlanet, enemyPlanet.mesh)) {
             gameOver = true;
-            alert('Game Over! Planets collided! Your score: ' + gameState.score + 'Press R or click the reload button to play again!');
+            alert(
+                `Game Over! Planets collided! Your score: ${gameState.score}. Press R or click the reload button to play again!`
+            );
             return;
         }
     });
@@ -238,7 +243,7 @@ function animate() {
 function addStars() {
     const starsGeometry = new THREE.BufferGeometry();
     const starsMaterial = new THREE.PointsMaterial({
-        color: 0xFFFFFF,
+        color: 0xFAFAFA,
         size: 1,
         sizeAttenuation: false
     });
