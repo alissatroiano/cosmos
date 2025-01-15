@@ -100,7 +100,6 @@ button {
 .button-up::after {
   top: 20px;
   transform: rotate(45deg);
-  
 }
 
 .button-down::after {
@@ -122,6 +121,27 @@ a:visited {
 
 .nav-row {
   display: flex;
+}
+
+/* ----------- Button */
+button#start {
+  position: absolute;
+    font-size: 2rem;
+    letter-spacing: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--darker);
+    color: var(--link-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    font-family: "tt-frantz-b", sans-serif;
+    margin: 100px auto;
+    /* display: none; */
+}
+
+button#start:hover {
+  background-color: var(--darkest);
 }
 
 /* ----------- Top Controls */

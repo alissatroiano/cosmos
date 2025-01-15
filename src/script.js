@@ -143,7 +143,7 @@ let gameOver = false;
 let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
 let newEnemyAngle = Math.PI;
-let velocity = 0.025; // Initial speed for the player
+let velocity = 0; // Initial speed for the player
 const maxSpeed = 0.0425; // Maximum speed
 const minimumSpeed = 0.01245;
 const decelerationRate = 0.0125; // Deceleration rate per second
@@ -174,11 +174,11 @@ function animate() {
     const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds since the last frame
     lastUpdateTime = currentTime;
 
-    // Apply deceleration to player velocity
+    // Game starts when user starts moving the player planet
     if (velocity > 0) {
-        velocity = Math.max(velocity - decelerationRate * deltaTime, 0);
+        velocity = Math.min(velocity + 0.0001, maxSpeed);
     } else if (velocity < 0) {
-        velocity = Math.min(velocity + decelerationRate * deltaTime, 0);
+        velocity = Math.max(velocity - 0.0001, -maxSpeed);
     }
 
     // Define a unified track radius for circular paths
@@ -190,11 +190,7 @@ function animate() {
     playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
 
     // move player planet at regular velocity if no acceleration or deceleration
-    if (velocity === 0) {
-        playerAngle += minimumSpeed;
-        playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
-        playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
-    }
+
     // Track player loops and spawn enemy planets every 3 loops
     if (playerAngle >= Math.PI * 2) {
         playerAngle -= Math.PI * 2; // Reset angle after each loop
