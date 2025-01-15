@@ -336,6 +336,11 @@ span.close {
   line-height: 1.6em;
 }
 
+#coverView {
+  position: relative;
+  min-height: 100vh;
+}
+
 #controls {
   position: relative;
 }
