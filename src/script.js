@@ -1,4 +1,11 @@
-window.focus(); // Capture keys right away (by default focus is on editor)
+document.getElementById('playButton').addEventListener('click', () => {
+    document.getElementById('coverView').style.display = 'none';
+    document.getElementById('gameView').style.display = 'block';
+    document.getElementById('gameView').focus(); // Focus on game view when play is clicked
+    
+    // If you need to ensure the game view is focusable, add tabindex
+    document.getElementById('gameView').setAttribute('tabindex', '0');
+});
 
 // Create Scene
 const scene = new THREE.Scene();
@@ -139,11 +146,12 @@ gameState.otherPlanets.push({
 });
 
 // Setup game settings
+let gamePaused = false; // Add this at the top with your other game state variables
 let gameOver = false;
 let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
 let newEnemyAngle = Math.PI;
-let velocity = 0.025; // Initial speed for the player
+let velocity = 0; // Initial speed for the player
 const maxSpeed = 0.0425; // Maximum speed
 const minimumSpeed = 0.01245;
 const decelerationRate = 0.0125; // Deceleration rate per second
@@ -170,6 +178,12 @@ function animate() {
     if (gameOver) return;
     requestAnimationFrame(animate);
 
+     // Don't update game state if paused
+     if (gamePaused) {
+        renderer.render(scene, camera);
+        return;
+    }
+
     const currentTime = performance.now();
     const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds since the last frame
     lastUpdateTime = currentTime;
@@ -179,7 +193,7 @@ function animate() {
         velocity = Math.max(velocity - decelerationRate * deltaTime, 0);
     } else if (velocity < 0) {
         velocity = Math.min(velocity + decelerationRate * deltaTime, 0);
-    }
+    } 
 
     // Define a unified track radius for circular paths
     const trackRadius = 280;
@@ -199,11 +213,8 @@ function animate() {
     if (playerAngle >= Math.PI * 2) {
         playerAngle -= Math.PI * 2; // Reset angle after each loop
         loopCount++;
-        // Score point after every 3 loops
-        if (loopCount % 3 === 0) {
-            scorePoint();
-        }
-
+       // Score point after every 3 loops
+       
         // Spawn a new enemy planet every 3 loops
         if (loopCount % 3 === 0) {
             const randomColor = enemyColors[Math.floor(Math.random() * enemyColors.length)];

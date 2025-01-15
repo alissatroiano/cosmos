@@ -339,7 +339,6 @@ span.close {
 #coverView {
   position: relative;
   min-height: 100vh;
-  z-index: 1000;
 }
 
 #controls {

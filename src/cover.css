@@ -30,12 +30,20 @@ body {
     ), url("https://images.unsplash.com/photo-1516331138075-f3adc1e149cd?q=80&w=1508&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");    max-width: 100%;
     /* Full height */
     max-width: 100%;
-    height: auto; 
+   min-height: 100vh; 
     overflow: hidden;
     /* Center and scale the image nicely */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+div#buttons {
+  display: none;
+}
+
+div#gameView{
+  display: none;
 }
 
 .logo-container {
@@ -131,7 +139,7 @@ body {
   .modal {
     display: none; /* Hidden by default */
     position: absolute; /* Stay in place */
-    z-index: 100; /* Sit on top */
+    z-index: 10000; /* Sit on top */
     left: 0;
     top: 0;
     bottom: 0;

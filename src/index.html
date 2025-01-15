@@ -30,9 +30,8 @@
         type="image/ico"
         href="../static/images/cosmos.ico"
       />
-        <link href="cover.css" rel="stylesheet" />
-        <link href="style.css" rel="stylesheet" />
-
+      <link id="coverStyles" rel="stylesheet" href="cover.css">
+       <link id="gameStyles" rel="stylesheet" href="style.css">
       </head>
     
 <body>
@@ -46,7 +45,7 @@
                 </div>
                 <div class="button-container">
                     <button id="playButton" class="game-button">Play</button>
-                    <button id="directionsButton" class="game-button">Directions</button>
+                    <button id="instructions" class="game-button">Directions</button>
                 </div>
             </div>
         </div>
@@ -56,7 +55,7 @@
 <div id="gameView">
   <div id="score"></div>
   <div id="controls">
-    <div id="instructions"></div>
+    <div id="howToPlay"></div>
   </div>
   <div id="buttons">
     <div class="button-up" id="accelerate"></div>
@@ -107,28 +106,14 @@
         </div>
       </div>
     </div>
-  
-    <script>
-      document.getElementById('playButton').addEventListener('click', () => {
-          document.getElementById('coverView').style.display = 'none';
-          document.getElementById('gameView').style.display = 'block';
-          // If you need to initialize the game
-          if (typeof initGame === 'function') {
-              initGame();
-          }
-      });
 
-      document.getElementById('directionsButton').addEventListener('click', () => {
-          // Handle directions (could show a modal or switch to directions view)
-      });
-  </script>
 
       <script>
         // Get the modal
         var modal = document.getElementById("myModal");
   
         // Get the button that opens the modal
-        var btn = document.getElementById("myBtn");
+        var btn = document.getElementById("instructions");
   
         // Get the <span> element that closes the modal
         var span = document.getElementsByClassName("close")[0];
@@ -151,10 +136,47 @@
           }
         };
       </script>
+
+<script>
+  // Get the modal
+  var modal = document.getElementById("myModal");
+
+  // Get the button that opens the modal
+  var btn = document.getElementById("howToPlay");
+
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+
+  // When the user clicks the button, open the modal
+  btn.onclick = function () {
+    modal.style.display = "block";
+  };
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function () {
+    12;
+    modal.style.display = "none";
+  };
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+</script>
+
  <!--Script-->
  <script type="module" src="script.js"></script>
  <!--Three JS-->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js"></script>
+ <script>
+  document.getElementById('playButton').addEventListener('click', () => {
+      document.getElementById('coverView').style.display = 'none';
+      document.getElementById('gameView').style.display = 'none';
+      gamePaused = false; // This will start the game
+        });
+    </script>
  <!--Bootstrap Scripts-->
  <script
    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
@@ -166,5 +188,26 @@
    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
    crossorigin="anonymous"
  ></script>
+
+ <script>
+  document.getElementById('playButton').addEventListener('click', () => {
+      // Switch views
+      document.getElementById('coverView').style.display = 'none';
+      document.getElementById('gameView').style.display = 'block';
+      
+      // Switch stylesheets
+      document.getElementById('coverStyles').disabled = true;
+      document.getElementById('gameStyles').disabled = false;
+      
+      // Initialize game
+      if (typeof initGame === 'function') {
+          setTimeout(() => {
+              initGame();
+          }, 100);
+      }
+  });
+
+
+</script>
 </body>
 </html>
