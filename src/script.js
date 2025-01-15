@@ -1,5 +1,14 @@
-window.focus(); // Capture keys right away (by default focus is on editor)
+document.getElementById('playButton').addEventListener('click', () => {
+    document.getElementById('coverView').style.display = 'none';
+    document.getElementById('gameView').style.display = 'block';
+    document.getElementById('gameView').focus(); // Focus on game view when play is clicked
+    
+    // If you need to ensure the game view is focusable, add tabindex
+    document.getElementById('gameView').setAttribute('tabindex', '0');
+});
 
+const gameView = document.getElementById('gameView');
+window.gameView = gameView;
 // Create Scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a0a0a); // Black background for space
@@ -139,6 +148,7 @@ gameState.otherPlanets.push({
 });
 
 // Setup game settings
+let gamePaused = false; // Add this at the top with your other game state variables
 let gameOver = false;
 let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
@@ -170,6 +180,12 @@ function animate() {
     if (gameOver) return;
     requestAnimationFrame(animate);
 
+     // Don't update game state if paused
+     if (gamePaused) {
+        renderer.render(scene, camera);
+        return;
+    }
+
     const currentTime = performance.now();
     const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds since the last frame
     lastUpdateTime = currentTime;
@@ -179,7 +195,7 @@ function animate() {
         velocity = Math.max(velocity - decelerationRate * deltaTime, 0);
     } else if (velocity < 0) {
         velocity = Math.min(velocity + decelerationRate * deltaTime, 0);
-    }
+    } 
 
     // Define a unified track radius for circular paths
     const trackRadius = 280;
@@ -188,22 +204,13 @@ function animate() {
     playerAngle += velocity;
     playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
     playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
-
-    // move player planet at regular velocity if no acceleration or deceleration
-    if (velocity === 0) {
-        playerAngle += minimumSpeed;
-        playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
-        playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
-    }
+   
     // Track player loops and spawn enemy planets every 3 loops
     if (playerAngle >= Math.PI * 2) {
         playerAngle -= Math.PI * 2; // Reset angle after each loop
         loopCount++;
-        // Score point after every 3 loops
-        if (loopCount % 3 === 0) {
-            scorePoint();
-        }
-
+       // Score point after every 3 loops
+       
         // Spawn a new enemy planet every 3 loops
         if (loopCount % 3 === 0) {
             const randomColor = enemyColors[Math.floor(Math.random() * enemyColors.length)];
