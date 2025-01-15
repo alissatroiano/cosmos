@@ -178,14 +178,14 @@ function animate() {
     if (gameOver) return;
     requestAnimationFrame(animate);
 
-     // Don't update game state if paused
-     if (gamePaused) {
+    // Don't update game state if paused
+    if (gamePaused) {
         renderer.render(scene, camera);
         return;
     }
 
     const currentTime = performance.now();
-    const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds since the last frame
+    const deltaTime = (currentTime - lastUpdateTime) / 1000;
     lastUpdateTime = currentTime;
 
     // Apply deceleration to player velocity
@@ -198,10 +198,12 @@ function animate() {
     // Define a unified track radius for circular paths
     const trackRadius = 280;
 
-    // Move player planet based on velocity
-    playerAngle += velocity;
-    playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
-    playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
+    // Move player planet only if there's velocity
+    if (velocity !== 0) {
+        playerAngle += velocity;
+        playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
+        playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
+    }
 
     // move player planet at regular velocity if no acceleration or deceleration
     if (velocity === 0) {
