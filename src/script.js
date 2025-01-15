@@ -7,6 +7,8 @@ document.getElementById('playButton').addEventListener('click', () => {
     document.getElementById('gameView').setAttribute('tabindex', '0');
 });
 
+const gameView = document.getElementById('gameView');
+window.gameView = gameView;
 // Create Scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a0a0a); // Black background for space
@@ -151,7 +153,7 @@ let gameOver = false;
 let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
 let newEnemyAngle = Math.PI;
-let velocity = 0; // Initial speed for the player
+let velocity = 0.025; // Initial speed for the player
 const maxSpeed = 0.0425; // Maximum speed
 const minimumSpeed = 0.01245;
 const decelerationRate = 0.0125; // Deceleration rate per second
