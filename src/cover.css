@@ -1,0 +1,227 @@
+:root {
+    --primary-color: #6b40eb;
+    --secondary-color: #917ff6;
+    --link-color: #8594e4;
+    --placeholder: #c7cdf5c8;
+    --accent-color: rgb(255 152 252);
+    --light-color: #d5def5;
+    --dark: #2d0d83;
+    --darker: #1b0754;
+    --darkest: #08001f;
+    --text-shadow: 2px 4px 3px rgba(67, 15, 88, 0.1);
+  }
+  
+  @font-face {
+    font-family: 'Oswald';
+    src: url('../assets/fonts/Oswald/Oswald-VariableFont_wght.ttf') format('truetype');
+  }
+  
+  @font-face {
+    font-family: 'Montserrat';
+    src: url('../assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf') format('truetype');
+  }
+  
+
+body {
+    background-color: #000;
+    background-image: url("https://images.unsplash.com/photo-1516331138075-f3adc1e149cd?q=80&w=1508&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    max-width: 100%;
+    /* Full height */
+    height: 100%; 
+    overflow: hidden;
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.logo-container {
+    margin: 50px auto; 
+}
+
+.logo-container img {
+    max-width: 100%;
+    width: 350px;
+    height: auto;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    max-width: 300px;
+    height: auto;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem; /* Space between buttons */
+}
+
+.game-button {
+    padding: 1rem 2rem;
+    font-size: 2rem;
+    letter-spacing: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--darker);
+    color: var(--link-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    font-family: "tt-frantz-b", sans-serif;
+}
+
+.game-button:hover {
+    background-color: var(--darkest);
+}
+
+
+/* ---------------- Modal */
+/* Modal Header */
+.modal-header {
+    padding: 2px 16px;
+    background-color: #040219;
+    color: white;
+    font-family: "tt-frantz-b", sans-serif;
+  
+  }
+  
+  .how-to-restart,
+  .how-to-play,
+  .about {
+    font-family: "tt-frantz-b", sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 5px;
+    font-weight: 400;
+    color: #705ff4;
+  }
+  
+  .how-to-restart {
+    margin-top: 30px;
+  }
+  
+  .how-to-play {
+    padding-top: 20px;
+  }
+  
+  .modal p {
+    font-size: 14px;
+    font-family: 'futura-pt', sans-serif;
+  }
+  
+  /* Modal Body */
+  .modal-body {padding: 2px 16px;}
+  
+  /* Modal Footer */
+  .modal-footer {
+    padding: 2px 16px;
+    background-color: #040219;
+    color: white;
+  }
+  
+  /* ---------------------- Modal Content */
+  .modal {
+    display: none; /* Hidden by default */
+    position: absolute; /* Stay in place */
+    z-index: 100; /* Sit on top */
+    left: 0;
+    top: 0;
+    bottom: 0;
+    max-width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    -webkit-animation-name: fadeIn; /* Fade in the background */
+    -webkit-animation-duration: 0.4s;
+    animation-name: fadeIn;
+    animation-duration: 0.4s;
+    margin: 0px auto;
+  }
+  
+  /* Modal Content */
+  .modal-content {
+    position: absolute;
+    bottom: 0;
+    margin: 0 auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-top: 50px;
+    max-width: 85%;
+    height: 80%;
+    -webkit-animation-name: slideIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: slideIn;
+    animation-duration: 0.4s;
+    background-color: #040219;
+  }
+  
+  .modal-header {
+    background-color: #040219;
+    border: none;
+    margin-bottom: 10px;
+    font-family: "Space Grotesk", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-style: normal;
+  }
+  
+  .modal-body {
+    padding: 2px 16px;
+    border: none;
+    color: #fafafa;
+    background-color: #040219;
+  }
+  
+  .modal-footer {
+    padding: 2px 16px;
+    background-color: #040219;
+    color: white;
+    border: none;
+  }
+  
+  span.close {
+    margin-right: 50px;
+    float: right;
+    color: #5544d6;
+    font-size: 4rem;
+    left: 0;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #2d0d83;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .modal-body {padding: 2px 16px;}
+  
+  /* Add Animation */
+  @-webkit-keyframes slideIn {
+    from {bottom: -300px; opacity: 0} 
+    to {bottom: 0; opacity: 1}
+  }
+  
+  @keyframes slideIn {
+    from {bottom: -300px; opacity: 0}
+    to {bottom: 0; opacity: 1}
+  }
+  
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+  }
+  
