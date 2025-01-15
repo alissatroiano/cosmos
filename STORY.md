@@ -1,108 +1,73 @@
 ![Cosmos](https://i.im.ge/2025/01/12/z4hLTm.Your-paragraph-text.png)
 
-## Cosmos
+# Cosmos
 
-Cosmos is a space game that challenges players to control a planet's movement in orbit and avoid colliding into other planets. Cosmos was built for [AWS's Game Builder Challenge](https://awsdevchallenge.devpost.com/?ref_feature=challenge&ref_medium=your-open-hackathons&ref_content=Submissions+open).
+Cosmos is a space game that challenges players to control a planet's movement in orbit and avoid colliding with other planets. Cosmos was built for [AWS's Game Builder Challenge](https://awsdevchallenge.devpost.com/?ref_feature=challenge&ref_medium=your-open-hackathons&ref_content=Submissions+open).
 
 ## Inspiration
 
-Cosmos was built for the [AWS Game Builder Challenge](https://awsdevchallenge.devpost.com/?ref_feature=challenge&ref_medium=your-open-hackathons&ref_content=Submissions+open) hosted by [Devpost](https://awsdevchallenge.devpost.com/?ref_feature=challenge&ref_medium=your-open-hackathons&ref_content=Submissions+open). The AWS hackathon challenges developers to  use Amazon Q Developer, a generative AI-powered assistant, to build games faster. 
+Cosmos was built for the [AWS Game Builder Challenge](https://awsdevchallenge.devpost.com/?ref_feature=challenge&ref_medium=your-open-hackathons&ref_content=Submissions+open) hosted by [Devpost](https://awsdevchallenge.devpost.com/?ref_feature=challenge&ref_medium=your-open-hackathons&ref_content=Submissions+open). The AWS hackathon challenges developers to use Amazon Q Developer, a generative AI-powered assistant, to build games faster.
 
-I needed to build a functional, visually appealing game by the given deadline and I was eager to learn a new framework. Luckily, the [AWS Game Builder Challenge](https://awsdevchallenge.devpost.com/?ref_feature=challenge&ref_medium=your-open-hackathons&ref_content=Submissions+open) gives contestants the opportunity to use Amazon Q Developer, a powerful AI assistant, to speed up development. Because of this, I decided to build a game based on something I really love (space) using a technology I have never used, Three.js.
+I needed to build a functional, visually appealing game by the given deadline and was eager to learn a new framework. Fortunately, the [AWS Game Builder Challenge](https://awsdevchallenge.devpost.com/?ref_feature=challenge&ref_medium=your-open-hackathons&ref_content=Submissions+open) gives contestants the opportunity to use Amazon Q Developer, a powerful AI assistant, to speed up development. Because of this, I decided to build a game based on something I really love (space) using a technology I had never used: Three.js.
 
-## What it does
+## What It Does
 
-The main objective of Cosmos is to use the game's mechanics to move around your orbit as many times as possible without colliding into other planets on the adjacent orbit.
+The main objective of Cosmos is to use the game's mechanics to move around your orbit as many times as possible without colliding with other planets on the adjacent orbit.
 
 ### How to Play
-##### **If you're playing on Desktop:**
-- Use the Arrow Up and Arrow Down keys on your keyboard to control your planet's movement. 
-  - Use Arrow Up to move accelerate 
-  - Use Arrow Down to decelerate
-  
-##### **If you're playing on Mobile:**
-- Click the arrow up button on the bottom left corner of the screen to accelerate
-- Click the arrow down button on the bottom left corner of the screen to decelerate
 
-##### Game Over
-- You lose Cosmos if and when you collide with another planet object.
-- When the game ends, press 'R' on your keyboard or click the reload icon to play again!
+#### **If you're playing on Desktop:**
+- Use the Arrow Up and Arrow Down keys on your keyboard to control your planet's movement.  
+  - Use Arrow Up to accelerate.  
+  - Use Arrow Down to decelerate.  
 
-## How I built it
+#### **If you're playing on Mobile:**
+- Tap the arrow up button on the bottom-left corner of the screen to accelerate.  
+- Tap the arrow down button on the bottom-left corner of the screen to decelerate.  
 
-I followed [this tutorial](https://www.youtube.com/watch?v=JhgBwJn1bQw) to learn the basics of Three.JS and get a general idea of how my planets would move in orbit. Once I had a general understanding of the framework, I prompted Amazon Q to change the game's mechanics, create a space theme, and create spherical objects to represent planets.
+#### Game Over
+- You lose Cosmos if and when you collide with another planet object.  
+- When the game ends, press `R` on your keyboard or click the reload icon to play again!  
+
+## How I Built It
+
+I followed [this tutorial](https://www.youtube.com/watch?v=JhgBwJn1bQw) to learn the basics of Three.js and get a general idea of how my planets would move in orbit. Once I had a general understanding of the framework, I prompted Amazon Q to change the game's mechanics, create a space theme, and generate spherical objects to represent planets.
 
 ### Working with Q
 
-Because I was part of GitHub Copilot's Beta Testing team in 2022, I already knew that prompts must be detailed, logical, and specific when working with a local IDE assistant of this nature.
+As a member of GitHub Copilot's Beta Testing team in 2022, I already knew that prompts must be detailed, logical, and specific when working with a local IDE assistant like Amazon Q Developer.
 
 #### Scene
+I used simple inline code comments with common Three.js terms to prompt Q into setting up the scene, camera, and renderer accordingly.  
 
-I used simple inline code comments with common Three.JS terms to prompt Q into setting up the scene, camera, and renderer accordingly. 
-
-#### UX 
-
-I then prompted Q to create a dark background and add stars to create an outer space environment.
+#### UX
+I then prompted Q to create a dark background and add stars to simulate an outer space environment.  
 
 #### Game Mechanics
+Rather than simply revising the tutorial code, I used inline comments, Amazon Q IDE Chat, and my own JavaScript knowledge to configure the game mechanics and bind user actions to keyboard keys and HTML elements.  
 
-Because I did not want to simply copy and revise the tutorial I followed, I used inline comments, Amazon Q IDE Chat, and my own JavaScript knowledge to configure the game mechanics and bind user actions to keyboard keys and HTML elements. 
-
-The code generated by Q was usually sufficient enough for a working game, but I updated variables based on my  vision for how Cosmos should work. Some examples include: planet acceleration & deceleration speed, orbit design, the scoring system, and planet radius.
+The code generated by Q was usually sufficient for a working game, but I updated variables to match my vision for how Cosmos should work. For example, I adjusted the planet acceleration and deceleration speed, orbit design, scoring system, and planet radius.  
 
 #### Tech Stack & Dev Tools Used:
+- Three.js  
+- Amazon Q  
+- CSS  
+- HTML  
+- Amazon Amplify  
+- Node/NPM  
+- Git/GitHub  
 
-- Three.JS
-- Amazon Q
-- CSS
-- HTML
-- Amazon Amplify
-- Node/NPM
-- Git/GitHub
-
-## Challenges I ran into
+## Challenges I Ran Into
 
 ### Orbit Track Setup
+Defining velocity, acceleration, and player controls was easy with Q, but I encountered challenges when prompting Q to create two adjacent and overlapping orbit tracks.
 
-Defining velocity, acceleration and player controls was easy with Q, but I ran into some challenges when prompting Q to create two adjacent & overlapping orbit tracks.
+I wrote several sets of inline comments, instructing Q to create two adjacent tracks that overlap in the center. I also explained in the chat that the player planet would need to move on track 1 while enemy planets will spawn on track 2. I also explained how this was necessary to create the game I wanted to use. Despite multiple attempts, the AI repeatedly delivered circular tracks that were either connected or concentric.
 
-I wrote several sets of inline comments, instructing Q to create two tracks that overlap in the center. I also explained in the chat that the player planet would move on track1 and enemy planets would spawn on track 2. Despite several attempts, the AI repeatedly generated one track, with both player and enemy planets orbiting it.
+Here are some examples of prompts and what they resulted in:
 
-In an effort to describe the shape using an example, I prompted Q with the following comment:
-
-```// Setup two track parameters to look like an infinity symbol, so the user's challenge is to avoid colliding with the other planets (using up/down keyboard acceleration controls)```
-
-As a result, Q generated an infinity symbol looking track, but it was positioned incorrectly and the planets were rotating on the same orbit, making collision impossible.
-
+```javascript
+// Setup two track parameters to look like an infinity symbol, so the user's challenge is to avoid colliding with the other planets (using up/down keyboard acceleration controls)
+```
 ![Infinity Track](https://i.im.ge/2025/01/14/zBFkLX.infinity-track-q-1.gif)
 
-I revised my code comments to instruct Q to create two adjacent, overlapping tracks again, but Q provided inner and outer tracks using THREE.RingGeometry, which generates a single ring, not two distinct and separate tracks. 
-
-![Two Track Problem](https://i.im.ge/2025/01/14/zBOSRc.two-track-problem.gif)
-
-#### Deceleration
-
-Despite my code comments and chat inquiries, I couldn't seem to get Amazon Q to decelerate by simply slowing down. Instead, Q repeatedly suggested code that caused the player planet to go backwards when deceleration controls were used. After reviewing the code, I realized Amazon Q had declared a maximum speed, but not a minimum speed. I defined these values myself and refactored accordingly.
-
-## Accomplishments that I'm proud of
-
-- Planning: I am proud of my decision to build a realistic MVP that satisfies all of the AWS Game Challenge requirements and functions as intended. Like most enthusiastic software developers, I am often tempted to include advanced features & designs to timely hackathon projects like this. Doing so can lead to bugs at the last minute and poor documentation. I planned this project to be fun, innovative, and - most importantly - fully functional by its' due date. I'm proud of myself for sticking with the plan and getting it done correctly on time.
-
-- Incorporating New Tools & Technologies:  I have never used Three.JS or Amazon Amplify to build and deploy a web game like this. I'm proud of myself for being patient, following tutorials, reading documentation, and successfully including these new tools in my web game.  
-
-- Three.JS Development:  When I ran into the Orbit Track & Deceleration challenges described above, I decided to solve the problems myself. I learned a lot by doing so, which I'm very proud I took the time to do.
-
-## What I learned
-
-Throughout the course of this project, I learned a lot about how carefully one must name constants & variables before prompting IDE AI assistants, like Amazon Q Developer. I also learned a great deal about geometry in Three.JS by fixing the mistakes I inadvertently triggered.
-
-For example, when I prompted Q to generate two overlapping tracks, I named them innerTrack and outerTrack, which may have prompted the AI to use THREE.RingGeometry. I inspected the code and learned that this geometry generates a single ring, not two distinct and separate tracks. The inner and outer radii are calculated, but these tracks overlap in space because the inner and outer rings will be positioned at the same center. 
-
-I realized that in order to create the adjacent, overlapping tracks I needed for the game, I had to create custom ring-like geometry by manually specifying points for both the outer and inner circles. I also learned that  offsetX and offsetZ variables can be used to position the two tracks with a slight spatial separation. This ensures the tracks do not overlap directly and are properly positioned with an intentional gap between them.
-
-## What's next for Cosmos
-
-Now that the base game is done, I want to enhance the UI by implementing the following feature updates:
-- Create new enemy objects (debris, asteroids, etc.) in an array and have them spawn as the player moves through the layers.
-- Incorporate gradients & textures, so the planets look more realistic.
-- Add rings (like the rings of Saturn) to some planets on the enemy orbit.   
