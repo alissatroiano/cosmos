@@ -45,7 +45,7 @@
                 </div>
                 <div class="button-container">
                     <button id="playButton" class="game-button">Play</button>
-                    <button id="instructions" class="game-button">Directions</button>
+                    <button id="howToPlay" class="game-button">Directions</button>
                 </div>
             </div>
         </div>
@@ -62,11 +62,11 @@
     <div class="content"></div>
   </div>
   <div class="restart">
-    <div class="icon" style="display: none;">
+    <div class="icon">
       <button class="btn" id="reset">
         <i class="fi-refresh"></i>
       </button>
-      <button class="instructions" id="myBtn">
+      <button class="instructions" id="instructions">
         <p>?</p>
       </button>
     </div>
@@ -74,7 +74,7 @@
   </div>
 
      <!-- The Modal -->
-     <div id="myModal" class="modal">
+     <div id="howToPlayModal" class="modal">
       <!-- Modal content -->
       <div class="modal-content">
         <div class="modal-header">
@@ -103,7 +103,6 @@
         </div>
       </div>
     </div>
-
 
       <script>
         // Get the modal
@@ -136,7 +135,7 @@
 
 <script>
   // Get the modal
-  var modal = document.getElementById("myModal");
+  var modal = document.getElementById("howToPlayModal");
 
   // Get the button that opens the modal
   var btn = document.getElementById("howToPlay");

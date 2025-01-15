@@ -202,13 +202,7 @@ function animate() {
     playerAngle += velocity;
     playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
     playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
-
-    // move player planet at regular velocity if no acceleration or deceleration
-    if (velocity === 0) {
-        playerAngle += minimumSpeed;
-        playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
-        playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
-    }
+   
     // Track player loops and spawn enemy planets every 3 loops
     if (playerAngle >= Math.PI * 2) {
         playerAngle -= Math.PI * 2; // Reset angle after each loop
