@@ -38,13 +38,72 @@ body {
     background-size: cover;
 }
 
-div#buttons {
-  display: none;
-}
 
 div#gameView{
   display: none;
 }
+
+
+#buttons {
+  position: absolute; 
+  bottom: 0;
+  left: 0;
+  padding-bottom: 20px;
+  margin-left: 30px;
+  /* right: 0; */
+}
+
+.button-up {
+  position: relative;
+  padding: 10px;
+  margin: 10px auto;
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  transition: all 0.2s linear;
+}
+
+.button-down {
+  position: relative;
+  padding: 10px;
+  height: 35px;
+  width: 35px;
+  transition: all 0.2s linear;
+  margin-bottom: 50px;
+}
+
+.button-down:hover {
+  transform: translate3d(0, 5px, 0);
+}
+
+.button-up:hover {
+  transform: translate3d(0, -5px, 0);
+}
+
+.button-up::after,
+.button-down::after {
+  content: "";
+  position: relative;
+  left: 17px;
+  z-index: 11;
+  display: block;
+  width: 25px;
+  height: 25px;
+  border-top: 3px solid var(--secondary-color);
+  border-left: 3px solid var(--secondary-color);
+}
+
+.button-up::after {
+  top: 20px;
+  transform: rotate(45deg);
+  
+}
+
+.button-down::after {
+  top: 10px;
+  transform: rotate(225deg);
+}
+
 
 .logo-container {
     margin: 50px auto; 
