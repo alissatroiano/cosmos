@@ -35,13 +35,42 @@ dirLight.position.set(100, -100, 100).normalize();
 dirLight.castShadow = true;
 scene.add(dirLight);
 
+// Create planetTextures array using 'textures' files
+const planetTextures = [
+    'mars.jpg',
+    'callisto.jpg',
+    'tehys.jpg',
+    'redplanet.jpg',
+    'jupiter.jpg',
+    'saturn.jpg',
+    'europa.jpg',
+    'colorio.jpg',
+];
+
+// Helper function to get a random item from an array
+function getRandomElement(array) {
+    return array[Math.floor(Math.random() * array.length)];
+}
+
 // Create a planet
-function createPlanet(color = [], radius = 25) {
+function createPlanet(color = [], radius = 25, texturePath = null) {
     const geometry = new THREE.SphereGeometry(radius, 25, 25);
+    const loader = new THREE.TextureLoader();
+
+    // Load the specified texture or a random one if none is provided
+    const texture = loader.load(
+        texturePath || getRandomElement(planetTextures),
+        () => console.log(`Texture loaded: ${texturePath || "Random texture"}`),
+        undefined,
+        (err) => console.error(`Error loading texture: ${err}`)
+    );
+
     const material = new THREE.MeshPhongMaterial({
         color: color,
-        shininess: 30
+        shininess: 30,
+        map: texture,
     });
+
     const sphere = new THREE.Mesh(geometry, material);
     sphere.castShadow = true;
     sphere.receiveShadow = true;
@@ -51,21 +80,15 @@ function createPlanet(color = [], radius = 25) {
 }
 
 const enemyColors = [
-    0xfcba03, // Yellow
-    0xf22e62, // Pink
     0x8c2b3d, // Red
-    0xf6ff33, // yellow
-    0x3db32b, // lime green
-    0xc94779, // pink
-    0xeb3f3f, // salmon red
-    0xff8800, // Orange
-    0x3babd4, // Blue
-    0xf70fc9 // Neon Pink
+    0x96a4a8, // grey
+    0xe66363, // salmon red
+    0x545a5c, // dark grey
+    0xa2a8a8 // light grey
 ]
 
 // Create player planet
-const playerPlanet = createPlanet(0x732bb3);
-// Create enemy planet and use ememyColors array to shuffle planet colors
+const playerPlanet = createPlanet(0x5acbed, 28, 'earth.jpg'); // Player planet is always Earth
 let enemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
 
 scene.add(playerPlanet);
