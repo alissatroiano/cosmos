@@ -43,8 +43,8 @@ const planetTextures = [
     'https://i.im.ge/2025/01/27/HlOhBW.europa.jpeg',
     'https://i.im.ge/2025/01/27/HlO5AT.jupiter.jpeg',
     'https://i.im.ge/2025/01/27/HlO9Hc.saturn.jpeg',
-    'https://i.im.ge/2025/01/27/HlOm1L.tehys.jpeg',
-, ];
+    'https://i.im.ge/2025/01/27/HlOm1L.tehys.jpeg', ,
+];
 
 // Helper function to get a random item from an array
 function getRandomElement(array) {
@@ -154,7 +154,7 @@ const gameState = {
 
 gameState.otherPlanets.push({
     mesh: enemyPlanet,
-    angle: Math.PI,
+    angle: 0,
     speed: 0.025,
     radius: 260, // Adjust as needed
     clockwise: true
@@ -163,7 +163,7 @@ gameState.otherPlanets.push({
 // Setup game settings
 let gameOver = false;
 let playerAngle = 0;
-let enemyAngle = 0; // Start moving enemy planet on opposite side
+let enemyAngle = 0;
 let newEnemyAngle = 0;
 let velocity = 0; // Initial speed for the player
 const maxSpeed = 0.0425; // Maximum speed
@@ -211,7 +211,6 @@ function animate() {
     playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
     playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
 
-    // move player planet at regular velocity if no acceleration or deceleration
 
     // Track player loops and spawn enemy planets every 3 loops
     if (playerAngle >= Math.PI * 2) {
@@ -260,8 +259,8 @@ function animate() {
                 return;
             }
         });
-        }
-        renderer.render(scene, camera);
+    }
+    renderer.render(scene, camera);
 }
 
 // Add some stars
@@ -324,7 +323,7 @@ document.addEventListener('keydown', (event) => {
 function resetGame() {
     gameOver = false;
     playerAngle = 0;
-    enemyAngle = Math.PI;
+    enemyAngle = 0;
     animate();
 }
 
