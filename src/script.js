@@ -44,7 +44,7 @@ const planetTextures = [
     'https://i.im.ge/2025/01/27/HlO5AT.jupiter.jpeg',
     'https://i.im.ge/2025/01/27/HlO9Hc.saturn.jpeg',
     'https://i.im.ge/2025/01/27/HlOm1L.tehys.jpeg',
-];
+, ];
 
 // Helper function to get a random item from an array
 function getRandomElement(array) {
@@ -163,8 +163,8 @@ gameState.otherPlanets.push({
 // Setup game settings
 let gameOver = false;
 let playerAngle = 0;
-let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
-let newEnemyAngle = Math.PI;
+let enemyAngle = 0; // Start moving enemy planet on opposite side
+let newEnemyAngle = 0;
 let velocity = 0; // Initial speed for the player
 const maxSpeed = 0.0425; // Maximum speed
 const minimumSpeed = 0.01245;
@@ -245,22 +245,23 @@ function animate() {
     }
 
     // Move enemy planets along track
-    gameState.otherPlanets.forEach((enemyPlanet) => {
-        enemyPlanet.angle += enemyPlanet.speed * (enemyPlanet.clockwise ? 1 : 1);
-        enemyPlanet.mesh.position.x = Math.cos(enemyPlanet.angle) * trackRadius + (offsetX + centerAdjustX);
-        enemyPlanet.mesh.position.z = Math.sin(enemyPlanet.angle) * trackRadius + (offsetZ + centerAdjustZ);
+    if (playerAngle > 0) {
+        gameState.otherPlanets.forEach((enemyPlanet) => {
+            enemyPlanet.angle += enemyPlanet.speed * (enemyPlanet.clockwise ? 1 : 1);
+            enemyPlanet.mesh.position.x = Math.cos(enemyPlanet.angle) * trackRadius + (offsetX + centerAdjustX);
+            enemyPlanet.mesh.position.z = Math.sin(enemyPlanet.angle) * trackRadius + (offsetZ + centerAdjustZ);
 
-        // Check for collisions with the player planet
-        if (checkCollision(playerPlanet, enemyPlanet.mesh)) {
-            gameOver = true;
-            alert(
-                `Game Over! Planets collided! Your score: ${gameState.score}. Press R or click the reload button to play again!`
-            );
-            return;
+            // Check for collisions with the player planet
+            if (checkCollision(playerPlanet, enemyPlanet.mesh)) {
+                gameOver = true;
+                alert(
+                    `Game Over! Planets collided! Your score: ${gameState.score}. Press R or click the reload button to play again!`
+                );
+                return;
+            }
+        });
         }
-    });
-
-    renderer.render(scene, camera);
+        renderer.render(scene, camera);
 }
 
 // Add some stars
