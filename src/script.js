@@ -37,14 +37,13 @@ scene.add(dirLight);
 
 // Create planetTextures array using 'textures' files
 const planetTextures = [
-    'mars.jpg',
-    'callisto.jpg',
-    'tehys.jpg',
-    'redplanet.jpg',
-    'jupiter.jpg',
-    'saturn.jpg',
-    'europa.jpg',
-    'colorio.jpg',
+    'https://i.im.ge/2025/01/27/HlOamP.colorio.jpeg',
+    'https://i.im.ge/2025/01/27/HlO7Z1.callisto.jpeg',
+    'https://i.im.ge/2025/01/27/HlOUbr.mars.jpeg',
+    'https://i.im.ge/2025/01/27/HlOhBW.europa.jpeg',
+    'https://i.im.ge/2025/01/27/HlO5AT.jupiter.jpeg',
+    'https://i.im.ge/2025/01/27/HlO9Hc.saturn.jpeg',
+    'https://i.im.ge/2025/01/27/HlOm1L.tehys.jpeg',
 ];
 
 // Helper function to get a random item from an array
@@ -88,7 +87,7 @@ const enemyColors = [
 ]
 
 // Create player planet
-const playerPlanet = createPlanet(0x5acbed, 28, 'earth.jpg'); // Player planet is always Earth
+const playerPlanet = createPlanet(0x5acbed, 25, 'https://i.im.ge/2025/01/27/HlOsOp.earth.jpeg'); // Player planet is always Earth
 let enemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
 
 scene.add(playerPlanet);
