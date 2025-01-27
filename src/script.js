@@ -37,13 +37,17 @@ scene.add(dirLight);
 
 // Create planetTextures array using 'textures' files
 const planetTextures = [
-    'https://i.im.ge/2025/01/27/HlOamP.colorio.jpeg',
-    'https://i.im.ge/2025/01/27/HlO7Z1.callisto.jpeg',
-    'https://i.im.ge/2025/01/27/HlOUbr.mars.jpeg',
-    'https://i.im.ge/2025/01/27/HlOhBW.europa.jpeg',
-    'https://i.im.ge/2025/01/27/HlO5AT.jupiter.jpeg',
-    'https://i.im.ge/2025/01/27/HlO9Hc.saturn.jpeg',
-    'https://i.im.ge/2025/01/27/HlOm1L.tehys.jpeg', ,
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/europa.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/ganymede.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/mars.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/saturn.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/jupiter.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/tehys.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/callisto.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/dione.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/mercury.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/venus.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/neptune.jpg',
 ];
 
 // Helper function to get a random item from an array
@@ -87,7 +91,7 @@ const enemyColors = [
 ]
 
 // Create player planet
-const playerPlanet = createPlanet(0x5acbed, 25, 'https://i.im.ge/2025/01/27/HlOsOp.earth.jpeg'); // Player planet is always Earth
+const playerPlanet = createPlanet(0x5acbed, 25, 'https://cosmos-game.s3.us-east-2.amazonaws.com/earth.jpg'); // Player planet is always Earth
 let enemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
 
 scene.add(playerPlanet);
