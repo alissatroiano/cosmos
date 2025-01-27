@@ -56,7 +56,8 @@ function getRandomElement(array) {
 }
 
 // Create a planet
-function createPlanet(color = [], radius = 25, texturePath = null) {
+function createPlanet(color = [], radius = 18,
+     texturePath = null) {
     const geometry = new THREE.SphereGeometry(radius, 25, 25);
     const loader = new THREE.TextureLoader();
 
@@ -91,7 +92,7 @@ const enemyColors = [
 ]
 
 // Create player planet
-const playerPlanet = createPlanet(0x5acbed, 25, 'https://cosmos-game.s3.us-east-2.amazonaws.com/earth.jpg'); // Player planet is always Earth
+const playerPlanet = createPlanet(0x5acbed, 18, 'https://cosmos-game.s3.us-east-2.amazonaws.com/earth.jpg'); // Player planet is always Earth
 let enemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
 
 scene.add(playerPlanet);
