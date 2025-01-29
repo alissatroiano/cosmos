@@ -48,6 +48,8 @@ const planetTextures = [
     'https://cosmos-game.s3.us-east-2.amazonaws.com/mercury.jpg',
     'https://cosmos-game.s3.us-east-2.amazonaws.com/venus.jpg',
     'https://cosmos-game.s3.us-east-2.amazonaws.com/neptune.jpg',
+    'https://s3-us-west-2.amazonaws.com/s.cdpn.io/17271/lroc_color_poles_1k.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/earth.jpg',
 ];
 
 // Helper function to get a random item from an array
@@ -83,17 +85,28 @@ function createPlanet(color = [], radius = 18,
     return sphere;
 }
 
-const enemyColors = [
-    0x8c2b3d, // Red
-    0x96a4a8, // grey
-    0xe66363, // salmon red
-    0x545a5c, // dark grey
-    0xa2a8a8 // light grey
-]
 
-// Create player planet
-const playerPlanet = createPlanet(0x5acbed, 18, 'https://cosmos-game.s3.us-east-2.amazonaws.com/earth.jpg'); // Player planet is always Earth
-let enemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
+// Create player rocket ship instead of planet using 'rocket.png' image
+function createRocketShip() {
+    const geometry = new THREE.PlaneGeometry(60, 60);
+    // add offset so rocket tilts upward
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('rocket1.png');
+    const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        side: THREE.DoubleSide,
+    });
+    const plane = new THREE.Mesh(geometry, material);
+    plane.position.set(0, 0, 0);
+    plane.renderOrder = 2;
+    return plane;
+}
+
+const playerPlanet = createRocketShip();
+
+// const playerPlanet = createPlanet(0x5acbed, 18, 'https://cosmos-game.s3.us-east-2.amazonaws.com/earth.jpg'); // Player planet is always Earth
+let enemyPlanet = createPlanet(planetTextures[Math.floor(Math.random() * planetTextures.length)]);
 
 scene.add(playerPlanet);
 scene.add(enemyPlanet);
@@ -228,7 +241,7 @@ function animate() {
 
         // Spawn a new enemy planet every 3 loops
         if (loopCount % 3 === 0) {
-            const randomColor = enemyColors[Math.floor(Math.random() * enemyColors.length)];
+            const randomColor = planetTextures[Math.floor(Math.random() * planetTextures.length)];
             const randomAngle = Math.random() * Math.PI * 2; // Random spawn angle
             const randomSpeed = 0.02 + Math.random() * 0.02; // Random speed between 0.02 and 0.05
 
