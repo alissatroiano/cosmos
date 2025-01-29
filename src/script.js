@@ -37,12 +37,12 @@ scene.add(dirLight);
 
 // Create planetTextures array using 'textures' files
 const planetTextures = [
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/europa.jpg',
     'https://cosmos-game.s3.us-east-2.amazonaws.com/ganymede.jpg',
     'https://cosmos-game.s3.us-east-2.amazonaws.com/mars.jpg',
     'https://cosmos-game.s3.us-east-2.amazonaws.com/saturn.jpg',
     'https://cosmos-game.s3.us-east-2.amazonaws.com/jupiter.jpg',
     'https://cosmos-game.s3.us-east-2.amazonaws.com/tehys.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/planet-texture-4.jpg',
     'https://cosmos-game.s3.us-east-2.amazonaws.com/callisto.jpg',
     'https://cosmos-game.s3.us-east-2.amazonaws.com/dione.jpg',
     'https://cosmos-game.s3.us-east-2.amazonaws.com/mercury.jpg',
@@ -50,6 +50,21 @@ const planetTextures = [
     'https://cosmos-game.s3.us-east-2.amazonaws.com/neptune.jpg',
     'https://s3-us-west-2.amazonaws.com/s.cdpn.io/17271/lroc_color_poles_1k.jpg',
     'https://cosmos-game.s3.us-east-2.amazonaws.com/earth.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/blue-planet-2.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/green-planet.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/planet-texture-2.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-1.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-2.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-3.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-4.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-5.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-6.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-7.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-8.jpg',
+    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-9.jpg',
+
+    ''
 ];
 
 // Helper function to get a random item from an array
