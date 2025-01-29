@@ -89,19 +89,27 @@ function createPlanet(color = [], radius = 18,
 // Create player rocket ship instead of planet using 'rocket.png' image
 function createRocketShip() {
     const geometry = new THREE.PlaneGeometry(60, 60);
-    // add offset so rocket tilts upward
     const textureLoader = new THREE.TextureLoader();
     const texture = textureLoader.load('rocket1.png');
     const material = new THREE.MeshBasicMaterial({
         map: texture,
         transparent: true,
-        side: THREE.DoubleSide,
+        side: THREE.DoubleSide,  // This is important - makes the plane visible from both sides
     });
     const plane = new THREE.Mesh(geometry, material);
-    plane.position.set(0, 0, 0);
-    plane.renderOrder = 2;
-    return plane;
+    
+    // Create a container for the rocket
+    const rocketContainer = new THREE.Object3D();
+    rocketContainer.add(plane);
+    
+    // Initial rotations to set up the rocket correctly
+    plane.rotation.x = Math.PI * 0.5; // Rotate the plane to face forward
+    
+    rocketContainer.position.set(0, 0, 0);
+    rocketContainer.renderOrder = 2;
+    return rocketContainer;
 }
+
 
 const playerPlanet = createRocketShip();
 
@@ -220,7 +228,7 @@ function animate() {
     } else if (velocity < 0) {
         velocity = Math.max(velocity - 0.0001, -maxSpeed);
     }
-
+    
     // Define a unified track radius for circular paths
     const trackRadius = 280;
 
@@ -228,6 +236,15 @@ function animate() {
     playerAngle += velocity;
     playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
     playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
+
+    // Calculate the direction of movement (tangent to the orbit)
+    const direction = new THREE.Vector3(
+        -Math.sin(playerAngle), // X component of tangent
+        0,                      // Y component (no vertical rotation)
+        Math.cos(playerAngle)   // Z component of tangent
+    );
+
+    playerPlanet.rotation.y = Math.atan2(direction.x, direction.z);
 
 
     // Track player loops and spawn enemy planets every 3 loops
@@ -278,6 +295,7 @@ function animate() {
             }
         });
     }
+    
     renderer.render(scene, camera);
 }
 
