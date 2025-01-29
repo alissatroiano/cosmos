@@ -105,7 +105,7 @@ function createPlanet(color = [], radius = 18,
 function createRocketShip() {
     const geometry = new THREE.PlaneGeometry(60, 60);
     const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load('rocket1.png');
+    const texture = textureLoader.load('https://cosmos-game.s3.us-east-2.amazonaws.com/rocket1.png');
     const material = new THREE.MeshBasicMaterial({
         map: texture,
         transparent: true,
