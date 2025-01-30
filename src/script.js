@@ -95,6 +95,9 @@ function createPlanet(color = [], radius = 25, texturePath = null) {
 
 // Create player planet
 const playerPlanet = createPlanet(0x5acbed, 25, 'planet-5.png'); // Player planet is always Earth
+playerPlanet.rotation.x = 3.1415*0.02;
+playerPlanet.rotation.y = 3.1415*1.54;
+
 let enemyPlanet = createPlanet(planetTextures[Math.floor(Math.random() * planetTextures.length)]);
 
 scene.add(playerPlanet);
@@ -198,7 +201,8 @@ let loopCount = 0;
 function animate() {
     if (gameOver) return;
     requestAnimationFrame(animate);
-
+    playerPlanet.rotation.y += 0.002;
+    playerPlanet.rotation.x += 0.0001;
     const currentTime = performance.now();
     const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds since the last frame
     lastUpdateTime = currentTime;
@@ -237,8 +241,9 @@ function animate() {
 
             const newEnemyPlanet = createPlanet(randomColor, Math.random() * 20 + 10); // Random radius
             newEnemyPlanet.position.x = Math.cos(randomAngle) * trackRadius + (offsetX + centerAdjustX);
-            newEnemyPlanet.position.z = Math.sin(randomAngle) * trackRadius + (offsetZ + centerAdjustZ);
-
+            newEnemyPlanet.rotation.y += 0.002;
+            newEnemyPlanet.rotation.x += 0.0001;newEnemyPlanet.position.z = Math.sin(randomAngle) * trackRadius + (offsetZ + centerAdjustZ);
+            
             scene.add(newEnemyPlanet);
 
             // Add enemy planet to game state with unified direction
@@ -250,7 +255,9 @@ function animate() {
             });
         }
     }
-
+    enemyPlanet.rotation.y += 0.002;
+    enemyPlanet.rotation.x += 0.0001;
+  
     // Move enemy planets along track
     gameState.otherPlanets.forEach((enemyPlanet) => {
         enemyPlanet.angle += enemyPlanet.speed * (enemyPlanet.clockwise ? 1 : 1);
