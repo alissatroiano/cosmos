@@ -40,11 +40,17 @@ const planetTextures = [
     'mars.jpg',
     'callisto.jpg',
     'tehys.jpg',
-    'redplanet.jpg',
     'jupiter.jpg',
     'saturn.jpg',
     'europa.jpg',
+    'neptune.jpg',
     'colorio.jpg',
+    'planet-3.png',
+    'venus.jpg',
+    'planet-texture-4.jpg',
+    'planet-texture-2.jpg',
+    'abstract-planet-2.jpg',
+    'abstract-planet-5.jpg',
 ];
 
 // Helper function to get a random item from an array
@@ -79,17 +85,17 @@ function createPlanet(color = [], radius = 25, texturePath = null) {
     return sphere;
 }
 
-const enemyColors = [
-    0x8c2b3d, // Red
-    0x96a4a8, // grey
-    0xe66363, // salmon red
-    0x545a5c, // dark grey
-    0xa2a8a8 // light grey
-]
+// const planetTextures = [
+//     0x8c2b3d, // Red
+//     0x96a4a8, // grey
+//     0xe66363, // salmon red
+//     0x545a5c, // dark grey
+//     0xa2a8a8 // light grey
+// ]
 
 // Create player planet
-const playerPlanet = createPlanet(0x5acbed, 28, 'earth.jpg'); // Player planet is always Earth
-let enemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
+const playerPlanet = createPlanet(0x5acbed, 25, 'planet-5.png'); // Player planet is always Earth
+let enemyPlanet = createPlanet(planetTextures[Math.floor(Math.random() * planetTextures.length)]);
 
 scene.add(playerPlanet);
 scene.add(enemyPlanet);
@@ -225,7 +231,7 @@ function animate() {
 
         // Spawn a new enemy planet every 3 loops
         if (loopCount % 3 === 0) {
-            const randomColor = enemyColors[Math.floor(Math.random() * enemyColors.length)];
+            const randomColor = planetTextures[Math.floor(Math.random() * planetTextures.length)];
             const randomAngle = Math.random() * Math.PI * 2; // Random spawn angle
             const randomSpeed = 0.02 + Math.random() * 0.02; // Random speed between 0.02 and 0.05
 
