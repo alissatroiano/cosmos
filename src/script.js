@@ -94,7 +94,7 @@ function createPlanet(color = [], radius = 25, texturePath = null) {
 // ]
 
 // Create player planet
-const playerPlanet = createPlanet(0x5acbed, 25, 'planet-5.png'); // Player planet is always Earth
+const playerPlanet = createPlanet(0xfafafa, 25, 'planet-5.png'); // Player planet is always Earth
 playerPlanet.rotation.x = 3.1415*0.02;
 playerPlanet.rotation.y = 3.1415*1.54;
 
@@ -107,7 +107,7 @@ scene.add(enemyPlanet);
 function createOrbitTrack(trackRadius, color, centerX, centerZ) {
     const outlineGeometry = new THREE.BufferGeometry();
     const points = [];
-    const segments = 64;
+    const segments = 75;
 
     for (let i = 0; i <= segments; i++) {
         const theta = (i / segments) * Math.PI * 2;
@@ -121,8 +121,8 @@ function createOrbitTrack(trackRadius, color, centerX, centerZ) {
     outlineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
     const outlineMaterial = new THREE.LineDashedMaterial({
         color: color,
-        dashSize: 10,
-        gapSize: 15,
+        dashSize: 5,
+        gapSize: 10,
     });
 
     const outline = new THREE.LineLoop(outlineGeometry, outlineMaterial);
@@ -140,8 +140,9 @@ const offsetZ = Math.sin(angle) * offsetDistance;
 const centerAdjustX = -offsetX / 2;
 const centerAdjustZ = -offsetZ / 2;
 // Create two tracks
-const track1 = createOrbitTrack(280, 0x32a852, centerAdjustX, centerAdjustZ); // First track
+const track1 = createOrbitTrack(280, 0x65db85, centerAdjustX, centerAdjustZ); // First track
 const track2 = createOrbitTrack(280, 0x825a5a, offsetX + centerAdjustX, offsetZ + centerAdjustZ); // Second track
+// Make both tracks have .7 opacity
 
 // Add both tracks to the scene
 scene.add(track1);
