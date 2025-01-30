@@ -37,34 +37,20 @@ scene.add(dirLight);
 
 // Create planetTextures array using 'textures' files
 const planetTextures = [
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/ganymede.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/mars.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/saturn.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/jupiter.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/tehys.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/planet-texture-4.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/callisto.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/dione.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/mercury.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/venus.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/neptune.jpg',
-    'https://s3-us-west-2.amazonaws.com/s.cdpn.io/17271/lroc_color_poles_1k.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/earth.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/blue-planet-2.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/green-planet.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/planet-texture-2.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-1.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-2.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-3.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-4.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-5.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-6.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-7.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-8.jpg',
-    'https://cosmos-game.s3.us-east-2.amazonaws.com/abstract-planet-9.jpg',
-
-    ''
+    'mars.jpg',
+    'callisto.jpg',
+    'tehys.jpg',
+    'jupiter.jpg',
+    'saturn.jpg',
+    'europa.jpg',
+    'neptune.jpg',
+    'colorio.jpg',
+    'planet-3.png',
+    'venus.jpg',
+    'planet-texture-4.jpg',
+    'planet-texture-2.jpg',
+    'abstract-planet-2.jpg',
+    'abstract-planet-5.jpg',
 ];
 
 // Helper function to get a random item from an array
@@ -73,8 +59,7 @@ function getRandomElement(array) {
 }
 
 // Create a planet
-function createPlanet(color = [], radius = 18,
-     texturePath = null) {
+function createPlanet(color = [], radius = 25, texturePath = null) {
     const geometry = new THREE.SphereGeometry(radius, 25, 25);
     const loader = new THREE.TextureLoader();
 
@@ -100,35 +85,19 @@ function createPlanet(color = [], radius = 18,
     return sphere;
 }
 
+// const planetTextures = [
+//     0x8c2b3d, // Red
+//     0x96a4a8, // grey
+//     0xe66363, // salmon red
+//     0x545a5c, // dark grey
+//     0xa2a8a8 // light grey
+// ]
 
-// Create player rocket ship instead of planet using 'rocket.png' image
-function createRocketShip() {
-    const geometry = new THREE.PlaneGeometry(60, 60);
-    const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load('https://cosmos-game.s3.us-east-2.amazonaws.com/rocket1.png');
-    const material = new THREE.MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        side: THREE.DoubleSide,  // This is important - makes the plane visible from both sides
-    });
-    const plane = new THREE.Mesh(geometry, material);
-    
-    // Create a container for the rocket
-    const rocketContainer = new THREE.Object3D();
-    rocketContainer.add(plane);
-    
-    // Initial rotations to set up the rocket correctly
-    plane.rotation.x = Math.PI * 0.5; // Rotate the plane to face forward
-    
-    rocketContainer.position.set(0, 0, 0);
-    rocketContainer.renderOrder = 2;
-    return rocketContainer;
-}
+// Create player planet
+const playerPlanet = createPlanet(0xfafafa, 25, 'planet-5.png'); // Player planet is always Earth
+playerPlanet.rotation.x = 3.1415*0.02;
+playerPlanet.rotation.y = 3.1415*1.54;
 
-
-const playerPlanet = createRocketShip();
-
-// const playerPlanet = createPlanet(0x5acbed, 18, 'https://cosmos-game.s3.us-east-2.amazonaws.com/earth.jpg'); // Player planet is always Earth
 let enemyPlanet = createPlanet(planetTextures[Math.floor(Math.random() * planetTextures.length)]);
 
 scene.add(playerPlanet);
@@ -138,7 +107,7 @@ scene.add(enemyPlanet);
 function createOrbitTrack(trackRadius, color, centerX, centerZ) {
     const outlineGeometry = new THREE.BufferGeometry();
     const points = [];
-    const segments = 64;
+    const segments = 75;
 
     for (let i = 0; i <= segments; i++) {
         const theta = (i / segments) * Math.PI * 2;
@@ -152,8 +121,8 @@ function createOrbitTrack(trackRadius, color, centerX, centerZ) {
     outlineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
     const outlineMaterial = new THREE.LineDashedMaterial({
         color: color,
-        dashSize: 10,
-        gapSize: 15,
+        dashSize: 5,
+        gapSize: 10,
     });
 
     const outline = new THREE.LineLoop(outlineGeometry, outlineMaterial);
@@ -171,8 +140,9 @@ const offsetZ = Math.sin(angle) * offsetDistance;
 const centerAdjustX = -offsetX / 2;
 const centerAdjustZ = -offsetZ / 2;
 // Create two tracks
-const track1 = createOrbitTrack(280, 0x32a852, centerAdjustX, centerAdjustZ); // First track
+const track1 = createOrbitTrack(280, 0x65db85, centerAdjustX, centerAdjustZ); // First track
 const track2 = createOrbitTrack(280, 0x825a5a, offsetX + centerAdjustX, offsetZ + centerAdjustZ); // Second track
+// Make both tracks have .7 opacity
 
 // Add both tracks to the scene
 scene.add(track1);
@@ -195,7 +165,7 @@ const gameState = {
 
 gameState.otherPlanets.push({
     mesh: enemyPlanet,
-    angle: 0,
+    angle: Math.PI,
     speed: 0.025,
     radius: 260, // Adjust as needed
     clockwise: true
@@ -204,8 +174,8 @@ gameState.otherPlanets.push({
 // Setup game settings
 let gameOver = false;
 let playerAngle = 0;
-let enemyAngle = 0;
-let newEnemyAngle = 0;
+let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
+let newEnemyAngle = Math.PI;
 let velocity = 0; // Initial speed for the player
 const maxSpeed = 0.0425; // Maximum speed
 const minimumSpeed = 0.01245;
@@ -232,7 +202,8 @@ let loopCount = 0;
 function animate() {
     if (gameOver) return;
     requestAnimationFrame(animate);
-
+    playerPlanet.rotation.y += 0.002;
+    playerPlanet.rotation.x += 0.0001;
     const currentTime = performance.now();
     const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds since the last frame
     lastUpdateTime = currentTime;
@@ -243,7 +214,7 @@ function animate() {
     } else if (velocity < 0) {
         velocity = Math.max(velocity - 0.0001, -maxSpeed);
     }
-    
+
     // Define a unified track radius for circular paths
     const trackRadius = 280;
 
@@ -252,15 +223,7 @@ function animate() {
     playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
     playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
 
-    // Calculate the direction of movement (tangent to the orbit)
-    const direction = new THREE.Vector3(
-        -Math.sin(playerAngle), // X component of tangent
-        0,                      // Y component (no vertical rotation)
-        Math.cos(playerAngle)   // Z component of tangent
-    );
-
-    playerPlanet.rotation.y = Math.atan2(direction.x, direction.z);
-
+    // move player planet at regular velocity if no acceleration or deceleration
 
     // Track player loops and spawn enemy planets every 3 loops
     if (playerAngle >= Math.PI * 2) {
@@ -279,8 +242,9 @@ function animate() {
 
             const newEnemyPlanet = createPlanet(randomColor, Math.random() * 20 + 10); // Random radius
             newEnemyPlanet.position.x = Math.cos(randomAngle) * trackRadius + (offsetX + centerAdjustX);
-            newEnemyPlanet.position.z = Math.sin(randomAngle) * trackRadius + (offsetZ + centerAdjustZ);
-
+            newEnemyPlanet.rotation.y += 0.002;
+            newEnemyPlanet.rotation.x += 0.0001;newEnemyPlanet.position.z = Math.sin(randomAngle) * trackRadius + (offsetZ + centerAdjustZ);
+            
             scene.add(newEnemyPlanet);
 
             // Add enemy planet to game state with unified direction
@@ -292,25 +256,25 @@ function animate() {
             });
         }
     }
-
+    enemyPlanet.rotation.y += 0.002;
+    enemyPlanet.rotation.x += 0.0001;
+  
     // Move enemy planets along track
-    if (playerAngle > 0) {
-        gameState.otherPlanets.forEach((enemyPlanet) => {
-            enemyPlanet.angle += enemyPlanet.speed * (enemyPlanet.clockwise ? 1 : 1);
-            enemyPlanet.mesh.position.x = Math.cos(enemyPlanet.angle) * trackRadius + (offsetX + centerAdjustX);
-            enemyPlanet.mesh.position.z = Math.sin(enemyPlanet.angle) * trackRadius + (offsetZ + centerAdjustZ);
+    gameState.otherPlanets.forEach((enemyPlanet) => {
+        enemyPlanet.angle += enemyPlanet.speed * (enemyPlanet.clockwise ? 1 : 1);
+        enemyPlanet.mesh.position.x = Math.cos(enemyPlanet.angle) * trackRadius + (offsetX + centerAdjustX);
+        enemyPlanet.mesh.position.z = Math.sin(enemyPlanet.angle) * trackRadius + (offsetZ + centerAdjustZ);
 
-            // Check for collisions with the player planet
-            if (checkCollision(playerPlanet, enemyPlanet.mesh)) {
-                gameOver = true;
-                alert(
-                    `Game Over! Planets collided! Your score: ${gameState.score}. Press R or click the reload button to play again!`
-                );
-                return;
-            }
-        });
-    }
-    
+        // Check for collisions with the player planet
+        if (checkCollision(playerPlanet, enemyPlanet.mesh)) {
+            gameOver = true;
+            alert(
+                `Game Over! Planets collided! Your score: ${gameState.score}. Press R or click the reload button to play again!`
+            );
+            return;
+        }
+    });
+
     renderer.render(scene, camera);
 }
 
@@ -374,7 +338,7 @@ document.addEventListener('keydown', (event) => {
 function resetGame() {
     gameOver = false;
     playerAngle = 0;
-    enemyAngle = 0;
+    enemyAngle = Math.PI;
     animate();
 }
 
