@@ -46,7 +46,10 @@ const planetTextures = [
     'neptune.jpg',
     'colorio.jpg',
     'planet-3.png',
+    'planet-5.png',
     'venus.jpg',
+    'dione.jpg',
+    'earth.jpg',
     'planet-texture-4.jpg',
     'planet-texture-2.jpg',
     'abstract-planet-2.jpg',
@@ -93,10 +96,31 @@ function createPlanet(color = [], radius = 25, texturePath = null) {
 //     0xa2a8a8 // light grey
 // ]
 
-// Create player planet
-const playerPlanet = createPlanet(0xfafafa, 25, 'planet-5.png'); // Player planet is always Earth
-playerPlanet.rotation.x = 3.1415*0.02;
-playerPlanet.rotation.y = 3.1415*1.54;
+// Create player rocket ship instead of planet using 'rocket.png' image
+function createRocketShip() {
+    const geometry = new THREE.PlaneGeometry(65, 85, 70);
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('rocket1.png');
+    const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        side: THREE.DoubleSide,  // This is important - makes the plane visible from both sides
+    });
+    const plane = new THREE.Mesh(geometry, material);
+    
+    // Create a container for the rocket
+    const rocketContainer = new THREE.Object3D();
+    rocketContainer.add(plane);
+    
+    // Initial rotations to set up the rocket correctly
+    plane.rotation.x = Math.PI * 0.5; // Rotate the plane to face forward
+    
+    rocketContainer.position.set(0, 0, 0);
+    rocketContainer.renderOrder = 2;
+    return rocketContainer;
+}
+
+const playerPlanet = createRocketShip();
 
 let enemyPlanet = createPlanet(planetTextures[Math.floor(Math.random() * planetTextures.length)]);
 
@@ -202,8 +226,7 @@ let loopCount = 0;
 function animate() {
     if (gameOver) return;
     requestAnimationFrame(animate);
-    playerPlanet.rotation.y += 0.002;
-    playerPlanet.rotation.x += 0.0001;
+ 
     const currentTime = performance.now();
     const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds since the last frame
     lastUpdateTime = currentTime;
@@ -219,11 +242,19 @@ function animate() {
     const trackRadius = 280;
 
     // Move player planet based on velocity
-    playerAngle += velocity;
-    playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
-    playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
+  // Move player planet based on velocity
+  playerAngle += velocity;
+  playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
+  playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
 
-    // move player planet at regular velocity if no acceleration or deceleration
+  // Calculate the direction of movement (tangent to the orbit)
+  const direction = new THREE.Vector3(
+      -Math.sin(playerAngle), // X component of tangent
+      0,                      // Y component (no vertical rotation)
+      Math.cos(playerAngle)   // Z component of tangent
+  );
+
+  playerPlanet.rotation.y = Math.atan2(direction.x, direction.z);
 
     // Track player loops and spawn enemy planets every 3 loops
     if (playerAngle >= Math.PI * 2) {
