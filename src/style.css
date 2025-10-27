@@ -37,14 +37,14 @@ button {
   border: none;
 }
 
-.question {
+#pauseBtn {
   color: rgb(112, 100, 224);
-  font-size: 2.65rem;
+  font-size: 2rem;
   font-weight: 600;
   padding-top: 33px;
 }
 
-.question:hover {
+.pause-button:hover {
   color: rgba(112, 100, 224, 0.662);
 }
 
@@ -100,7 +100,6 @@ button {
 .button-up::after {
   top: 20px;
   transform: rotate(45deg);
-  
 }
 
 .button-down::after {
@@ -124,26 +123,51 @@ a:visited {
   display: flex;
 }
 
+/* ----------- Button */
+button#start {
+  position: absolute;
+    font-size: 1rem;
+    letter-spacing: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--darker);
+    color: var(--link-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    font-family: "tt-frantz-b", sans-serif;
+    margin: 100px auto;
+    /* display: none; */
+}
+
+button#start:hover {
+  background-color: var(--darkest);
+}
+
 /* ----------- Top Controls */
 
 .restart .icon i {
-  font-size: 3rem;
+  font-size: 2rem;
   color: rgb(132, 25, 240);
+  padding-bottom: 5px;
 }
 
-.instructions {
-  position: absolute;
-  font-size: 2.8rem;
-  top: 0;
-  right: 0;
-  padding-top: 29px;
-  padding-right: 22px;
-  margin: 0 auto;
-  color: rgb(103, 87, 248);
+.icon {
+  margin: 0px auto;
+}
+
+#pauseBtn {
+  font-size: 1.25rem;
+  margin-top: 20px;
+}
+
+#pauseBtn:hover {
+  font-size: 1.45rem;
+  color: rgba(102, 15, 189, 0.786);
 }
 
 .restart .icon i:hover {
-  font-size: 3rem;
+  font-size: 2.25rem;
   color: rgba(102, 15, 189, 0.786);
 }
 

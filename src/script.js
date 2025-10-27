@@ -3,6 +3,9 @@ document.getElementById('playButton').addEventListener('click', () => {
     document.getElementById('gameView').style.display = 'block';
     document.getElementById('gameView').focus(); // Focus on game view when play is clicked
     
+    // Initialize score display
+    document.getElementById('score').innerText = '0';
+    
     // If you need to ensure the game view is focusable, add tabindex
     document.getElementById('gameView').setAttribute('tabindex', '0');
 });
@@ -44,13 +47,48 @@ dirLight.position.set(100, -100, 100).normalize();
 dirLight.castShadow = true;
 scene.add(dirLight);
 
+// Create planetTextures array using 'textures' files
+const planetTextures = [
+    'mars.jpg',
+    'callisto.jpg',
+    'tehys.jpg',
+    'jupiter.jpg',
+    'saturn.jpg',
+    'europa.jpg',
+    'neptune.jpg',
+    'colorio.jpg',
+    'planet-3.png',
+    'venus.jpg',
+    'planet-texture-4.jpg',
+    'planet-texture-2.jpg',
+    'abstract-planet-2.jpg',
+    'abstract-planet-5.jpg',
+];
+
+// Helper function to get a random item from an array
+function getRandomElement(array) {
+    return array[Math.floor(Math.random() * array.length)];
+}
+
 // Create a planet
-function createPlanet(color = [], radius = 25) {
+function createPlanet(color = [], radius = 25, texturePath = null) {
     const geometry = new THREE.SphereGeometry(radius, 25, 25);
+    const loader = new THREE.TextureLoader();
+
+    // Load the specified texture or a random one if none is provided
+    const texture = loader.load(
+        texturePath || getRandomElement(planetTextures),
+        () => console.log(`Texture loaded: ${texturePath || "Random texture"}`),
+        undefined,
+        (err) => console.error(`Error loading texture: ${err}`)
+    );
+
     const material = new THREE.MeshPhongMaterial({
         color: color,
-        shininess: 30
+        shininess: 30,
+        map: texture,
     });
+
     const sphere = new THREE.Mesh(geometry, material);
     sphere.castShadow = true;
     sphere.receiveShadow = true;
@@ -59,23 +97,20 @@ function createPlanet(color = [], radius = 25) {
     return sphere;
 }
 
-const enemyColors = [
-    0xfcba03, // Yellow
-    0xf22e62, // Pink
-    0x8c2b3d, // Red
-    0xf6ff33, // yellow
-    0x3db32b, // lime green
-    0xc94779, // pink
-    0xeb3f3f, // salmon red
-    0xff8800, // Orange
-    0x3babd4, // Blue
-    0xf70fc9 // Neon Pink
-]
+// const planetTextures = [
+//     0x8c2b3d, // Red
+//     0x96a4a8, // grey
+//     0xe66363, // salmon red
+//     0x545a5c, // dark grey
+//     0xa2a8a8 // light grey
+// ]
 
 // Create player planet
-const playerPlanet = createPlanet(0x732bb3);
-// Create enemy planet and use ememyColors array to shuffle planet colors
-let enemyPlanet = createPlanet(enemyColors[Math.floor(Math.random() * enemyColors.length)]);
+const playerPlanet = createPlanet(0xfafafa, 25, 'planet-5.png'); // Player planet is always Earth
+playerPlanet.rotation.x = 3.1415*0.02;
+playerPlanet.rotation.y = 3.1415*1.54;
+
+let enemyPlanet = createPlanet(planetTextures[Math.floor(Math.random() * planetTextures.length)]);
 
 scene.add(playerPlanet);
 scene.add(enemyPlanet);
@@ -84,7 +119,7 @@ scene.add(enemyPlanet);
 function createOrbitTrack(trackRadius, color, centerX, centerZ) {
     const outlineGeometry = new THREE.BufferGeometry();
     const points = [];
-    const segments = 64;
+    const segments = 75;
 
     for (let i = 0; i <= segments; i++) {
         const theta = (i / segments) * Math.PI * 2;
@@ -98,8 +133,8 @@ function createOrbitTrack(trackRadius, color, centerX, centerZ) {
     outlineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
     const outlineMaterial = new THREE.LineDashedMaterial({
         color: color,
-        dashSize: 10,
-        gapSize: 15,
+        dashSize: 5,
+        gapSize: 10,
     });
 
     const outline = new THREE.LineLoop(outlineGeometry, outlineMaterial);
@@ -117,8 +152,9 @@ const offsetZ = Math.sin(angle) * offsetDistance;
 const centerAdjustX = -offsetX / 2;
 const centerAdjustZ = -offsetZ / 2;
 // Create two tracks
-const track1 = createOrbitTrack(280, 0x32a852, centerAdjustX, centerAdjustZ); // First track
+const track1 = createOrbitTrack(280, 0x65db85, centerAdjustX, centerAdjustZ); // First track
 const track2 = createOrbitTrack(280, 0x825a5a, offsetX + centerAdjustX, offsetZ + centerAdjustZ); // Second track
+// Make both tracks have .7 opacity
 
 // Add both tracks to the scene
 scene.add(track1);
@@ -148,12 +184,12 @@ gameState.otherPlanets.push({
 });
 
 // Setup game settings
-let gamePaused = false; // Add this at the top with your other game state variables
+let gamePaused = false;
 let gameOver = false;
 let playerAngle = 0;
 let enemyAngle = Math.PI; // Start moving enemy planet on opposite side
 let newEnemyAngle = Math.PI;
-let velocity = 0.025; // Initial speed for the player
+let velocity = 0; // Initial speed for the player
 const maxSpeed = 0.0425; // Maximum speed
 const minimumSpeed = 0.01245;
 const decelerationRate = 0.0125; // Deceleration rate per second
@@ -179,23 +215,23 @@ let loopCount = 0;
 function animate() {
     if (gameOver) return;
     requestAnimationFrame(animate);
-
-     // Don't update game state if paused
-     if (gamePaused) {
+    
+    if (gamePaused) {
         renderer.render(scene, camera);
         return;
     }
-
+    playerPlanet.rotation.y += 0.002;
+    playerPlanet.rotation.x += 0.0001;
     const currentTime = performance.now();
     const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time in seconds since the last frame
     lastUpdateTime = currentTime;
 
-    // Apply deceleration to player velocity
+    // Game starts when user starts moving the player planet
     if (velocity > 0) {
-        velocity = Math.max(velocity - decelerationRate * deltaTime, 0);
+        velocity = Math.min(velocity + 0.0001, maxSpeed);
     } else if (velocity < 0) {
-        velocity = Math.min(velocity + decelerationRate * deltaTime, 0);
-    } 
+        velocity = Math.max(velocity - 0.0001, -maxSpeed);
+    }
 
     // Define a unified track radius for circular paths
     const trackRadius = 280;
@@ -204,23 +240,26 @@ function animate() {
     playerAngle += velocity;
     playerPlanet.position.x = Math.cos(playerAngle) * trackRadius + centerAdjustX;
     playerPlanet.position.z = Math.sin(playerAngle) * trackRadius + centerAdjustZ;
-   
+
+    // move player planet at regular velocity if no acceleration or deceleration
+
     // Track player loops and spawn enemy planets every 3 loops
     if (playerAngle >= Math.PI * 2) {
         playerAngle -= Math.PI * 2; // Reset angle after each loop
         loopCount++;
-       // Score point after every 3 loops
+        scorePoint(); // Award point every orbit
        
         // Spawn a new enemy planet every 3 loops
         if (loopCount % 3 === 0) {
-            const randomColor = enemyColors[Math.floor(Math.random() * enemyColors.length)];
+            const randomColor = planetTextures[Math.floor(Math.random() * planetTextures.length)];
             const randomAngle = Math.random() * Math.PI * 2; // Random spawn angle
             const randomSpeed = 0.02 + Math.random() * 0.02; // Random speed between 0.02 and 0.05
 
             const newEnemyPlanet = createPlanet(randomColor, Math.random() * 20 + 10); // Random radius
             newEnemyPlanet.position.x = Math.cos(randomAngle) * trackRadius + (offsetX + centerAdjustX);
-            newEnemyPlanet.position.z = Math.sin(randomAngle) * trackRadius + (offsetZ + centerAdjustZ);
-
+            newEnemyPlanet.rotation.y += 0.002;
+            newEnemyPlanet.rotation.x += 0.0001;newEnemyPlanet.position.z = Math.sin(randomAngle) * trackRadius + (offsetZ + centerAdjustZ);
+            
             scene.add(newEnemyPlanet);
 
             // Add enemy planet to game state with unified direction
@@ -232,7 +271,9 @@ function animate() {
             });
         }
     }
-
+    enemyPlanet.rotation.y += 0.002;
+    enemyPlanet.rotation.x += 0.0001;
+  
     // Move enemy planets along track
     gameState.otherPlanets.forEach((enemyPlanet) => {
         enemyPlanet.angle += enemyPlanet.speed * (enemyPlanet.clockwise ? 1 : 1);
@@ -308,27 +349,52 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// update resetGame() function to reload browser and restart game
+// update resetGame() function to reset game state
 function resetGame() {
     gameOver = false;
     playerAngle = 0;
     enemyAngle = Math.PI;
+    velocity = 0;
+    loopCount = 0;
+    gameState.score = 0;
+    
+    // Reset score display
+    document.getElementById('score').innerText = '0';
+    
+    // Remove all enemy planets except the first one
+    gameState.otherPlanets.slice(1).forEach(enemy => {
+        scene.remove(enemy.mesh);
+    });
+    gameState.otherPlanets = gameState.otherPlanets.slice(0, 1);
+    
+    // Reset player position
+    playerPlanet.position.x = Math.cos(playerAngle) * 280 + centerAdjustX;
+    playerPlanet.position.z = Math.sin(playerAngle) * 280 + centerAdjustZ;
+    
     animate();
 }
 
-// Add reset listener
+// Pause toggle function
+function togglePause() {
+    gamePaused = !gamePaused;
+    document.getElementById('pauseBtn').innerHTML = gamePaused ? '<p>▶</p>' : '<p>||</p>';
+}
+
+// Add reset and pause listeners
 document.addEventListener('keydown', (event) => {
     if (event.key === 'r' || event.key === 'R') {
         resetGame();
-        // reload browser
-        window.location.reload();
+    } else if (event.key === 'p' || event.key === 'P') {
+        togglePause();
     }
+});
+
+document.getElementById('pauseBtn').addEventListener('click', () => {
+    togglePause();
 });
 
 document.getElementById('reset').addEventListener('click', () => {
     resetGame();
-    // reload browser
-    window.location.reload();
 });
 
 // Add event listener for mobile & tablet

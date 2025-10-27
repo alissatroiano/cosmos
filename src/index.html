@@ -52,26 +52,30 @@
     </div>
 </div>
 
-<div id="gameView">
-  <div id="score"></div>
-  <div id="buttons">
-    <div class="button-up" id="accelerate"></div>
-    <div class="button-down" id="decelerate"></div>
-  </div>
-  <div id="results">
-    <div class="content"></div>
-  </div>
-  <div class="restart">
-    <div class="icon">
-      <button class="btn" id="reset">
-        <i class="fi-refresh"></i>
-      </button>
-      <button class="instructions" id="instructions">
-        <p>?</p>
-      </button>
+<!-- Game View -->
+<div id="gameView" style="display: none;">
+    <div id="score"></div>
+    <div id="controls">
+      <div id="instructions"></div>
     </div>
-  </div>
-  </div>
+    <div id="buttons">
+      <div class="button-up" id="accelerate"></div>
+      <div class="button-down" id="decelerate"></div>
+    </div>
+    <div id="results">
+      <div class="content"></div>
+    </div>
+    <div class="restart">
+      <div class="icon">
+        <button class="btn" id="reset">
+          <i class="fi-refresh"></i>
+        </button>
+        <button class="pause-button" id="pauseBtn">
+          <p>||</p>
+        </button>
+      </div>
+    </div>
+</div>
 
      <!-- The Modal -->
      <div id="howToPlayModal" class="modal">
@@ -87,10 +91,10 @@
           The main objective of Cosmos is to move around your orbit as many times as possible!
      Each time you complete three orbits without colliding with an enemy planet, you score a point and move on to the next level. 
             You <strong>lose</strong> Cosmos if and when you collide with another planet.</p>          
-            <p>When the game ends, press 'R' on your keyboard or click the reload icon to play again!
-            </p>
+         
         <h2 class="how-to-play">How to Play</h2>
-        <p>        <strong>The planet you control will always be the purple planet on the LEFT track</strong>
+
+        <p>The planet you control will always be the planet on the LEFT (green) track
         </strong></p>
         <p>
           If you're playing on <strong>Desktop</strong>,
@@ -100,7 +104,10 @@
           <p>If you're playing on <strong>Mobile</strong>,
             Click the arrow controls on the bottom left of the page to control your planet's speed.
             .</p>
-        </div>
+            <p>When the game ends, press 'R' on your keyboard or click the reload icon to play again!
+            </p>
+            <p><strong>Press Arrow Up when you're ready to Start!</strong></p>
+          </div>
       </div>
     </div>
 
@@ -166,13 +173,7 @@
  <script type="module" src="script.js"></script>
  <!--Three JS-->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js"></script>
- <script>
-  document.getElementById('playButton').addEventListener('click', () => {
-      document.getElementById('coverView').style.display = 'none';
-      document.getElementById('gameView').style.display = 'none';
-      gamePaused = false; // This will start the game
-        });
-    </script>
+
  <!--Bootstrap Scripts-->
  <script
    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
